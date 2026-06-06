@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  @keyframes float {
+    from { transform: translate(0, 0); }
+    to { transform: translate(30px, 30px); }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(0.5rem); }
+    75% { transform: translateX(-0.5rem); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes float {
+    from { transform: translate(0, 0); }
+    to { transform: translate(30px, 30px); }
+  }
+}
+
+
+@layer utilities {
+  .drawer-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #a855f7 #0b0e14;
+  }
+  
+  .ease-drawer {
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  
+    -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
+ 
+    -webkit-text-fill-color: white !important;
+ 
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+
+input:filter(autofill) {
+    background-color: transparent !important;
+}
+}

@@ -1,9 +1,15 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const StatCard = ({ title, value, icon, color }) => {
     return (
-        <div 
-            className="aura-stat-card group relative flex items-center gap-6 p-6 rounded-[20px] bg-slate-800/40 backdrop-blur-md border border-white/5 overflow-hidden transition-all duration-300 hover:bg-slate-800/60"
+        <motion.div 
+            variants={{
+              hidden: { opacity: 0, scale: 0.95, y: 15 },
+              show: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
+            }}
+            whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+            className="aura-stat-card group relative flex items-center gap-6 p-6 rounded-[20px] bg-slate-800/40 backdrop-blur-md border border-white/5 overflow-hidden transition-all duration-300 hover:bg-slate-800/60 cursor-pointer"
             style={{ borderLeft: `4px solid ${color}` }} 
         >
             {/* Subtle glow overlay */}
@@ -28,7 +34,7 @@ const StatCard = ({ title, value, icon, color }) => {
                     {title}
                 </p>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

@@ -62,21 +62,21 @@ const CourseDetailsView = ({ course: initialCourse, onBack }) => {
 
     return (
         <div className="bg-[#080a0f] min-h-screen text-white pb-[50px] font-sans">
-            <header className="flex justify-between items-center px-12 py-[15px] bg-[#0f172a]/95 backdrop-blur-[15px] border-b border-[#a855f7]/20 sticky top-0 z-[1000]">
-                <button onClick={onBack} className="flex items-center gap-2.5 bg-transparent border border-[#a855f7] text-[#a855f7] px-5 py-2.5 rounded-[10px] font-semibold cursor-pointer transition-all hover:bg-[#a855f710]">
+            <header className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0 px-4 md:px-12 py-[15px] bg-[#0f172a]/95 backdrop-blur-[15px] border-b border-[#a855f7]/20 sticky top-0 z-[1000]">
+                <button onClick={onBack} className="w-full md:w-auto flex justify-center items-center gap-2.5 bg-transparent border border-[#a855f7] text-[#a855f7] px-4 py-2 md:px-5 md:py-2.5 rounded-[10px] font-semibold cursor-pointer transition-all hover:bg-[#a855f710]">
                     <FiArrowLeft /> <span>Back to Dashboard</span>
                 </button>
-                <div className="flex items-center gap-4 text-sm font-medium">
-                    <span className="bg-[#a855f720] text-[#a855f7] px-3 py-1 rounded-full border border-[#a855f740] text-[10px] font-bold uppercase tracking-widest">Instructor Mode</span>
-                    <span className="text-slate-600">|</span>
-                    Preview: {course.title} 
-                    <span className="bg-[#22c55e1a] text-[#22c55e] px-2.5 py-1 rounded-full flex items-center gap-1.5 text-xs">
-                        <FiRefreshCw className="animate-spin" /> Live Sync
+                <div className="flex flex-wrap justify-center items-center gap-2 md:gap-4 text-xs md:text-sm font-medium">
+                    <span className="bg-[#a855f720] text-[#a855f7] px-2 md:px-3 py-1 rounded-full border border-[#a855f740] text-[9px] md:text-[10px] font-bold uppercase tracking-widest">Instructor Mode</span>
+                    <span className="text-slate-600 hidden sm:inline">|</span>
+                    <span className="truncate max-w-[150px] sm:max-w-xs">Preview: {course.title}</span>
+                    <span className="bg-[#22c55e1a] text-[#22c55e] px-2 py-1 md:px-2.5 rounded-full flex items-center gap-1 md:gap-1.5 text-[10px] md:text-xs">
+                        <FiRefreshCw className="animate-spin" /> <span className="hidden sm:inline">Live Sync</span>
                     </span>
                 </div>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-[50px] px-12 py-10 max-w-[1500px] mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-8 md:gap-[50px] px-4 md:px-12 py-6 md:py-10 max-w-[1500px] mx-auto">
                 <aside>
                     <div className="sticky top-[110px]">
                         <div className="rounded-[20px] overflow-hidden border border-[#1f2937] bg-[#111827]">
@@ -105,8 +105,8 @@ const CourseDetailsView = ({ course: initialCourse, onBack }) => {
                             <span className="bg-[#a855f720] text-[#a855f7] px-3 py-1 rounded-full text-[0.7rem] font-bold border border-[#a855f740] uppercase">{course.category}</span>
                             {course.status === 'Completed' && <span className="bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-[0.7rem] font-bold border border-green-500/30 uppercase flex items-center gap-1"><FiCheckCircle size={10}/> Finalized</span>}
                         </div>
-                        <h1 className="text-[3rem] font-extrabold my-[15px] bg-gradient-to-r from-white to-[#a855f7] bg-clip-text text-transparent leading-tight">{course.title}</h1>
-                        <p className="text-[#94a3b8] leading-relaxed text-[1.1rem] max-w-[800px]">{course.description}</p>
+                        <h1 className="text-3xl md:text-[3rem] font-extrabold my-3 md:my-[15px] bg-gradient-to-r from-white to-[#a855f7] bg-clip-text text-transparent leading-tight">{course.title}</h1>
+                        <p className="text-[#94a3b8] leading-relaxed text-sm md:text-[1.1rem] max-w-[800px]">{course.description}</p>
                     </section>
 
                     {hasFinalExam && (
@@ -185,10 +185,10 @@ const StatLine = ({ icon, label, count }) => (
 );
 
 const MaterialSection = ({ title, icon, count, children, showViewAll, isExpanded, onToggle }) => (
-    <section className="bg-[#111827] p-[25px] rounded-[20px] border border-[#1f2937] mb-[30px] shadow-sm">
-        <div className="flex justify-between items-center mb-5">
-            <h3 className="flex items-center gap-3 text-white font-bold text-lg"><span className="text-[#a855f7]">{icon}</span> {title}</h3>
-            <span className="bg-[#080a0f] px-2.5 py-1 rounded-lg text-[#64748b] text-[0.8rem]">{count}</span>
+    <section className="bg-[#111827] p-4 md:p-[25px] rounded-[20px] border border-[#1f2937] mb-[30px] shadow-sm">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
+            <h3 className="flex items-center gap-3 text-white font-bold text-base md:text-lg"><span className="text-[#a855f7]">{icon}</span> {title}</h3>
+            <span className="bg-[#080a0f] px-2.5 py-1 rounded-lg text-[#64748b] text-[0.8rem] self-start sm:self-auto">{count}</span>
         </div>
         <div className="flex flex-col gap-3">
             {children}

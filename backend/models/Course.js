@@ -13,9 +13,12 @@ const CourseSchema = new mongoose.Schema({
     pptSlides: [{ title: String, filePath: String }],
     assignments: [{ title: String, filePath: String, deadline: Date }],
     quizzes: [{
-        question: String,
-        options: [String],
-        correctAnswer: String
+        title: { type: String, required: true },
+        questions: [{
+            question: String,
+            options: [String],
+            correctAnswer: String
+        }]
     }],
 
   

@@ -74,17 +74,26 @@ export const forgotPassword = async (req, res) => {
     const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
     const message = `AuraLearn Password Reset Request:\n\nClick this link: ${resetUrl}`;
 
-    await sendEmail({
-      email: user.email,
-      subject: 'Password Recovery',
-      message,
-    });
-
-    res.status(200).json({ message: "Email sent!" });
-  }  catch (error) {
-  console.log("Detailed Email Error:", error); 
-  res.status(500).json({ message: "Email delivery failed", error: error.message });
-}
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Password Recovery',
+        message,
+      });
+      res.status(200).json({ message: "Email sent!" });
+    } catch (emailError) {
+      console.warn("⚠️ SMTP/Nodemailer email delivery failed. Reset Link logged to console:");
+      console.warn(`---------------- RESET LINK FOR ${user.email} ----------------`);
+      console.warn(message);
+      console.warn("---------------------------------------------------------------");
+      res.status(200).json({ 
+        message: "SMTP not configured. Reset link logged to backend console!" 
+      });
+    }
+  } catch (error) {
+    console.error("Forgot Password general error:", error);
+    res.status(500).json({ message: "Server error, try again." });
+  }
 };
 
 export const resetPassword = async (req, res) => {

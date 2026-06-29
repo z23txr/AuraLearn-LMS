@@ -4,6 +4,10 @@ import User from '../models/User.js';
 import CourseView from '../models/CourseView.js';
 import Enrollment from '../models/Enrollment.js';
 import Student from '../models/Student.js';
+import fs from 'fs';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const pdfParse = require('pdf-parse');
 // ========================Create Course (Initial metadata)
 export const createCourse = async (req, res) => {
     try {
@@ -341,7 +345,12 @@ export const getRecommendedCourses = async (req, res) => {
         });
 
         // 8. Order by priority score descending
-        scoredCandidates.sort((a, b) => b.score - a.score);
+        scoredCandidates.sort((a, b) => {
+            if (b.score !== a.score) {
+                return b.score - a.score;
+            }
+            return a.course.title.localeCompare(b.course.title);
+        });
 
         const recommendations = scoredCandidates.map(item => ({
             ...item.course._doc,
@@ -352,5 +361,99 @@ export const getRecommendedCourses = async (req, res) => {
         res.status(200).json(recommendations.slice(0, 3));
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+};
+
+export const generateQuizWithAI = async (req, res) => {
+    try {
+        const { courseId, promptText, numQuestions } = req.body;
+        const course = await Course.findById(courseId);
+        if (!course) return res.status(404).json({ error: "Course not found" });
+
+        const count = parseInt(numQuestions) || 5;
+        let topicPrompt = promptText ? `on the topic: "${promptText}"` : "matching the course description and curriculum";
+        
+        if (req.file) {
+            try {
+                const dataBuffer = fs.readFileSync(req.file.path);
+                const pdfData = await pdfParse(dataBuffer);
+                topicPrompt += `\n\nAlso base your questions tightly on the following document context:\n"""${pdfData.text.substring(0, 5000)}"""\n\n`;
+            } catch (err) {
+                console.error("PDF Parsing Error:", err);
+            }
+        }
+
+        const systemPrompt = `Generate a quiz with ${count} multiple choice questions for a course titled "${course.title}".
+Description: "${course.description}".
+The quiz should be ${topicPrompt}.
+You MUST return a JSON array containing objects. Each object MUST have exactly these fields:
+- "question": string (the question text)
+- "options": array of 4 strings (options)
+- "correctAnswer": string (must exactly match one of the options in the array)
+
+Do not return any markdown tags or backticks (like \`\`\`json). Return ONLY the raw JSON array.`;
+
+        const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${process.env.GEMINI_API_KEY}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            parts: [
+                                {
+                                    text: systemPrompt
+                                }
+                            ]
+                        }
+                    ],
+                    generationConfig: {
+                        responseMimeType: "application/json"
+                    }
+                })
+            }
+        );
+
+        const data = await response.json();
+        let resultText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        
+        // Robust Extraction of JSON Array
+        const startIdx = resultText.indexOf('[');
+        const endIdx = resultText.lastIndexOf(']');
+        if (startIdx !== -1 && endIdx !== -1) {
+            resultText = resultText.substring(startIdx, endIdx + 1);
+        } else {
+            console.error("Gemini returned invalid format:", resultText);
+            return res.status(400).json({ error: "Invalid AI response format. Please try again." });
+        }
+        
+        const generatedQuizzes = JSON.parse(resultText);
+
+        if (Array.isArray(generatedQuizzes)) {
+            return res.status(200).json({ message: "Quiz generated successfully! Please review before publishing.", quizzes: generatedQuizzes });
+        } else {
+            return res.status(400).json({ error: "Failed to parse generated questions as array" });
+        }
+    } catch (err) {
+        console.error("AI Quiz Gen Error:", err);
+        res.status(500).json({ error: err.message });
+    }
+};
+
+export const updateQuizzes = async (req, res) => {
+    try {
+        const { quizzes } = req.body; // array of quiz questions
+        const course = await Course.findByIdAndUpdate(
+            req.params.id,
+            { quizzes },
+            { new: true }
+        );
+        if (!course) return res.status(404).json({ error: "Course not found" });
+        res.status(200).json({ message: "Quizzes updated successfully!", quizzes: course.quizzes });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 };

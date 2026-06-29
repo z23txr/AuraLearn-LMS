@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiX, FiUser, FiSmartphone, FiMapPin, FiBook, FiCheckCircle, FiLoader } from 'react-icons/fi';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReactDOM from 'react-dom';
 
@@ -101,7 +101,7 @@ const EnrollmentModal = ({ isOpen, onClose, course, onSuccess }) => {
             className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
             onClick={onClose}
         >
-            <ToastContainer theme="dark" position="top-right" limit={1} />
+            
             <div 
                 className="bg-[#0f172a] w-full max-w-2xl rounded-[32px] border border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                 onClick={(e) => e.stopPropagation()}

@@ -11,7 +11,9 @@ import {
     submitFinalTest,    
     updateStudentGrade,
     trackCourseView,
-    getRecommendedCourses
+    getRecommendedCourses,
+    generateQuizWithAI,
+    updateQuizzes
 } from '../controllers/courseController.js';
 
 const router = express.Router();
@@ -27,6 +29,8 @@ router.post('/create', protect, authorize("instructor"), upload.single('thumbnai
 router.patch('/add-material/:id', protect, authorize("instructor"), upload.single('file'), addMaterial);
 router.delete('/delete/:id', protect, authorize("instructor"), deleteCourse);
 router.patch('/complete/:id', protect, authorize("instructor"), markCourseAsComplete);
+router.post('/generate-quiz', protect, authorize("instructor"), upload.single('file'), generateQuizWithAI);
+router.patch('/quizzes/:id', protect, authorize("instructor"), updateQuizzes);
 
 //  Student Assessment Routes
 router.post('/submit-test', protect, upload.single('file'), submitFinalTest);

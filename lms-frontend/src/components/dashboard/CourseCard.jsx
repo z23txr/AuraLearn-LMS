@@ -31,14 +31,15 @@ const CourseCard = ({ course, onEnrollSuccess }) => {
         <>
             <motion.div 
                 whileHover={{ y: -10 }}
-                className="w-full max-w-[360px] bg-[#0f172a]/80 backdrop-blur-md border border-white/10 rounded-[28px] overflow-hidden group shadow-xl transition-all hover:border-[#38bdf8]/50 font-['Poppins']"
+                className="w-full bg-[#0f172a]/80 backdrop-blur-md border border-white/10 rounded-[28px] overflow-hidden group shadow-xl transition-all hover:border-[#38bdf8]/50 font-['Poppins']"
             >
                 {/* Thumbnail Section */}
-                <div className="relative h-[200px] w-full overflow-hidden">
+                <div className="relative h-[160px] sm:h-[200px] w-full overflow-hidden">
                     <img 
-                        src={course.thumbnail ? `${PF}${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/300x180'} 
-                        alt={course.title} 
+                        src={course.thumbnail ? `${PF}${course.thumbnail.replace(/\\/g, '/')}` : `https://placehold.co/600x400/0f172a/38bdf8?text=${encodeURIComponent(course.title || course.courseTitle || 'Course')}`} 
+                        alt={course.title || course.courseTitle} 
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        onError={(e) => { e.target.src = `https://placehold.co/600x400/0f172a/38bdf8?text=Course` }}
                     />
                     <div className="absolute top-4 left-4 bg-[#38bdf8] text-[#0f172a] px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-lg">
                         {course.category || 'Curriculum'}

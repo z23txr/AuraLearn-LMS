@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
     FiEdit2, FiSave, FiUser, FiBookOpen, FiActivity, FiLoader 
 } from 'react-icons/fi';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const InstructorProfile = () => {
@@ -78,7 +78,7 @@ const InstructorProfile = () => {
         <div className="w-full px-4 pb-12 no-scrollbar overflow-y-auto max-h-full font-['Poppins'] bg-[#0b0e14]">
             <style>{`.no-scrollbar::-webkit-scrollbar { display: none !important; } .no-scrollbar { -ms-overflow-style: none !important; scrollbar-width: none !important; }`}</style>
             
-            <ToastContainer  position="top-center" />
+            
 
             {/* Header section */}
             <div className="bg-[#1e293b] rounded-[30px] p-10 mb-8 border border-white/20 text-center shadow-2xl">

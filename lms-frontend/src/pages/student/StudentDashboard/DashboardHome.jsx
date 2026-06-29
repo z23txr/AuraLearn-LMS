@@ -6,9 +6,10 @@ import StatCard from '../../../components/dashboard/StatCard';
 import ExploreCoursesList from '../../../components/dashboard/ExploreCoursesList';
 import Footer from '../../../components/common/Footer/Footer';
 import AIRecommendationRow from '../../../components/dashboard/AIRecommendationRow';
+import PageTransition from '../../../components/common/PageTransition/PageTransition';
 
 const DashboardHome = () => {
-    const [stats, setStats] = useState({ enrolled: "00", points: "000", done: "00", grade: "N/A" });
+    const [stats, setStats] = useState({ enrolled: "00", pending: "00", done: "00", grade: "N/A" });
     const [showAllRecent, setShowAllRecent] = useState(false);
     const [recommendedCourses, setRecommendedCourses] = useState([]);
     const user = JSON.parse(localStorage.getItem('auraUser'));
@@ -19,6 +20,7 @@ const DashboardHome = () => {
                 const studentId = user.id || user._id; //
                 const res = await axios.get(`http://localhost:5000/api/enrollments/student/${studentId}`);
                 const approved = res.data.filter(e => e.status === 'Approved');
+                const pending = res.data.filter(e => e.status === 'Pending');
                 const completed = approved.filter(e => e.progress === 100);
 
                 let userGrade = "N/A";
@@ -42,7 +44,7 @@ const DashboardHome = () => {
                 
                 setStats({
                     enrolled: approved.length.toString().padStart(2, '0'),
-                    points: (approved.length * 250 + completed.length * 500).toString(), 
+                    pending: pending.length.toString().padStart(2, '0'), 
                     done: completed.length.toString().padStart(2, '0'),
                     grade: userGrade
                 });
@@ -66,7 +68,8 @@ const DashboardHome = () => {
     }, [user?.id, user?._id]);
 
     return (
-        <div className="max-w-[1400px] mx-auto space-y-12 sm:space-y-16 font-['Poppins'] px-2 sm:px-0">
+        <PageTransition>
+            <div className="max-w-[1400px] mx-auto space-y-12 sm:space-y-16 font-['Poppins'] px-2 sm:px-0">
             
             {/*  HERO SECTION */}
             <div className="relative p-6 sm:p-12 rounded-[30px] sm:rounded-[50px] bg-gradient-to-br from-white/[0.05] to-transparent border border-white/10 overflow-hidden shadow-2xl">
@@ -82,12 +85,23 @@ const DashboardHome = () => {
                 </div>
 
                 {/*  STAT CARDS (Aapke original component ka design) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 relative z-10">
+                <motion.div 
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: {
+                        opacity: 1,
+                        transition: { staggerChildren: 0.1 }
+                      }
+                    }}
+                    initial="hidden"
+                    animate="show"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 relative z-10"
+                >
                     <StatCard title="Enrolled" value={stats.enrolled} icon={<FiBookOpen/>} color="#38bdf8" />
-                    <StatCard title="Aura Points" value={stats.points} icon={<FiActivity/>} color="#a855f7" />
+                    <StatCard title="Pending" value={stats.pending} icon={<FiClock/>} color="#f59e0b" />
                     <StatCard title="Completed" value={stats.done} icon={<FiAward/>} color="#22c55e" />
-                    <StatCard title="Grade" value={stats.grade} icon={<FiStar/>} color="#f59e0b" />
-                </div>
+                    <StatCard title="Overall Grade" value={stats.grade} icon={<FiStar/>} color="#a855f7" />
+                </motion.div>
             </div>
 
             {/* AI RECOMMENDED SECTION */}
@@ -127,6 +141,7 @@ const DashboardHome = () => {
                 <Footer />
             </footer>
         </div>
+        </PageTransition>
     );
 };
 

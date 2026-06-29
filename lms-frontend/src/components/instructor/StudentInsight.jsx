@@ -11,7 +11,7 @@ const StudentInsight = ({ student, onBack }) => {
     const [loading, setLoading] = useState(false);
     
    
-    const [submissions, setSubmissions] = useState(student.testResults || []);
+    const [submissions, setSubmissions] = useState(student.submissions || []);
 
     const token = localStorage.getItem('token')?.replace(/"/g, '');
 
@@ -77,10 +77,10 @@ const StudentInsight = ({ student, onBack }) => {
                             {/* Performance  */}
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                 {[
-                                    { label: 'LAST GRADE', val: submissions[0]?.grade ? `${submissions[0].grade}%` : 'N/A', icon: <FiAward />, color: 'text-yellow-500' },
-                                    { label: 'COURSE PROGRESS', val: student.progress || '0%', icon: <FiActivity />, color: 'text-[#a855f7]' },
+                                    { label: 'LAST GRADE', val: submissions.length > 0 && submissions[submissions.length-1]?.grade ? `${submissions[submissions.length-1].grade}` : 'N/A', icon: <FiAward />, color: 'text-yellow-500' },
+                                    { label: 'COURSE PROGRESS', val: `${student.progress || 0}%`, icon: <FiActivity />, color: 'text-[#a855f7]' },
                                     { label: 'STATUS', val: student.status || 'Active', icon: <FiCheckSquare />, color: 'text-green-500' },
-                                    { label: 'ASSIGNMENTS', val: `${student.completedTasks || 0}/1`, icon: <FiTrendingUp />, color: 'text-[#38bdf8]' },
+                                    { label: 'ASSIGNMENTS', val: `${submissions.length} Total`, icon: <FiTrendingUp />, color: 'text-[#38bdf8]' },
                                 ].map((stat, i) => (
                                     <div key={i} className="bg-[#1e293b]/40 border border-white/5 p-6 rounded-[30px] text-center backdrop-blur-md">
                                         <div className={`${stat.color} mb-2 flex justify-center text-xl`}>{stat.icon}</div>
@@ -100,10 +100,10 @@ const StudentInsight = ({ student, onBack }) => {
                                         <div key={i} className="space-y-3">
                                             <div className="flex justify-between text-xs font-bold uppercase tracking-tighter">
                                                 <span className="text-slate-300">{skill}</span>
-                                                <span className="text-[#38bdf8]">{student.progress || '25%'}</span>
+                                                <span className="text-[#38bdf8]">{Math.max((student.progress || 0) - (i * 10), 10)}%</span>
                                             </div>
                                             <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                                <div className="h-full bg-gradient-to-r from-[#a855f7] to-[#38bdf8]" style={{ width: student.progress || '25%' }}></div>
+                                                <div className="h-full bg-gradient-to-r from-[#a855f7] to-[#38bdf8]" style={{ width: `${Math.max((student.progress || 0) - (i * 10), 10)}%` }}></div>
                                             </div>
                                         </div>
                                     ))}
@@ -121,7 +121,7 @@ const StudentInsight = ({ student, onBack }) => {
                                                 <FiBookOpen size={24}/>
                                             </div>
                                             <div>
-                                                <h4 className="text-white font-bold tracking-tight uppercase text-sm">FINAL ASSESSMENT SUBMISSION</h4>
+                                                <h4 className="text-white font-bold tracking-tight uppercase text-sm">{sub.type || "Submission"}</h4>
                                                 <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase mt-1">
                                                     Status: <span className={sub.status === 'Passed' ? 'text-green-500' : 'text-yellow-500'}>{sub.status}</span>
                                                 </p>
@@ -129,27 +129,35 @@ const StudentInsight = ({ student, onBack }) => {
                                         </div>
                                         
                                         <div className="flex items-center gap-4 w-full md:w-auto">
-                                            {/* View Paper Link */}
-                                            <a 
-                                                href={`http://localhost:5000/${sub.submissionPath}`} 
-                                                target="_blank" rel="noreferrer"
-                                                className="p-3.5 bg-[#1e293b] text-[#a855f7] rounded-xl border border-white/5 hover:bg-[#a855f7] hover:text-white transition-all"
-                                                title="View Submitted Paper"
-                                            >
-                                                <FiExternalLink size={20} />
-                                            </a>
+                                            {/* View Submission Document */}
+                                            {sub.filePath && (
+                                                <a 
+                                                    href={`http://localhost:5000/${sub.filePath?.replace(/\\/g, '/')}`} 
+                                                    target="_blank" rel="noreferrer"
+                                                    className="p-3.5 bg-[#1e293b] text-[#a855f7] rounded-xl border border-white/5 hover:bg-[#a855f7] hover:text-white transition-all"
+                                                    title="View Submitted Paper"
+                                                >
+                                                    <FiExternalLink size={20} />
+                                                </a>
+                                            )}
 
                                             <div className="relative flex-1 md:flex-none">
                                                 <input 
                                                     type="number" 
                                                     placeholder="Grade"
                                                     defaultValue={sub.grade}
-                                                    className="w-full md:w-24 bg-[#0b0e14] border border-white/10 rounded-xl px-4 py-3 text-sm text-center text-white focus:border-[#a855f7] outline-none transition-all font-bold"
-                                                    onBlur={(e) => handleUpdate(sub.studentId, { grade: e.target.value, feedback: sub.feedback })}
+                                                    disabled={sub.status !== 'Pending'}
+                                                    className="w-full md:w-24 bg-[#0b0e14] border border-white/10 rounded-xl px-4 py-3 text-sm text-center text-white focus:border-[#a855f7] outline-none transition-all font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    onBlur={(e) => {
+                                                        if (sub.status === 'Pending') {
+                                                            handleUpdate(sub.studentId, { grade: e.target.value, feedback: sub.feedback });
+                                                        }
+                                                    }}
                                                 />
                                             </div>
                                             <button 
-                                                className="p-3.5 bg-[#a855f7] text-white rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all"
+                                                disabled={sub.status !== 'Pending'}
+                                                className="p-3.5 bg-[#a855f7] text-white rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
                                                 onClick={() => handleUpdate(sub.studentId, { grade: sub.grade, feedback: sub.feedback })}
                                             >
                                                 <FiSave size={20} />
@@ -163,8 +171,13 @@ const StudentInsight = ({ student, onBack }) => {
                                         <textarea 
                                             placeholder="Leave detailed feedback for the student..."
                                             defaultValue={sub.feedback}
-                                            className="w-full bg-[#0b0e14]/50 border border-white/5 rounded-2xl p-4 pl-12 text-xs text-slate-400 outline-none focus:border-[#38bdf8]/30 transition-all min-h-[80px] resize-none"
-                                            onBlur={(e) => handleUpdate(sub.studentId, { grade: sub.grade, feedback: e.target.value })}
+                                            disabled={sub.status !== 'Pending'}
+                                            className="w-full bg-[#0b0e14]/50 border border-white/5 rounded-2xl p-4 pl-12 text-xs text-slate-400 outline-none focus:border-[#38bdf8]/30 transition-all min-h-[80px] resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                            onBlur={(e) => {
+                                                if (sub.status === 'Pending') {
+                                                    handleUpdate(sub.studentId, { grade: sub.grade, feedback: e.target.value });
+                                                }
+                                            }}
                                         />
                                     </div>
                                 </div>

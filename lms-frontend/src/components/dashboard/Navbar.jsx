@@ -69,7 +69,7 @@ const Navbar = ({ onProfileClick, onMenuClick, isMobile, searchQuery, setSearchQ
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-8">
+                <div className="flex items-center gap-3 sm:gap-8">
                     
                     {/*  Notification Bell with Badge */}
                     <div 
@@ -86,10 +86,10 @@ const Navbar = ({ onProfileClick, onMenuClick, isMobile, searchQuery, setSearchQ
 
                     {/* Profile Trigger */}
                     <div 
-                        className="flex items-center gap-3 cursor-pointer group select-none"
+                        className="flex items-center gap-2 sm:gap-3 cursor-pointer group select-none"
                         onClick={onProfileClick} 
                     >
-                        <div className="flex flex-col items-end">
+                        <div className="hidden sm:flex flex-col items-end">
                             <span className="text-[0.75rem] text-[#94a3b8]">Welcome,</span>
                             <b className="text-white text-[0.95rem] tracking-tight group-hover:text-[#38bdf8] uppercase transition-colors">
                                 {user?.name || 'Scholar'}

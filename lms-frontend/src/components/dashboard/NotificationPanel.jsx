@@ -1,7 +1,7 @@
 import React from 'react';
 import { FiX, FiCheckCircle, FiCpu, FiMessageCircle, FiClock, FiCheck, FiTrash2 } from 'react-icons/fi';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const NotificationPanel = ({ isOpen, onClose, notifications = [], setNotifications, userId }) => {

@@ -3,7 +3,7 @@ import {
     FiX, FiUser, FiAward, FiBook, FiHexagon, FiSave, FiEdit2, FiInfo 
 } from 'react-icons/fi';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const StudentProfileDrawer = ({ isOpen, onClose }) => {
@@ -87,11 +87,11 @@ const StudentProfileDrawer = ({ isOpen, onClose }) => {
             className="fixed inset-0 bg-black/60 backdrop-blur-md z-[2000] flex justify-end transition-all duration-500"
             onClick={onClose}
         >
-            <ToastContainer position="top-center" theme="dark" />
+            
             
             {/* Main Drawer Container */}
             <div 
-                className="w-full max-w-[500px] h-screen bg-[#05070a]/95 backdrop-blur-[25px] border-l border-white/10 shadow-[-20px_0_50px_rgba(0,0,0,0.6)] animate-in slide-in-from-right duration-500 flex flex-col overflow-hidden font-['Poppins'] text-white"
+                className="w-full sm:max-w-[500px] h-screen bg-[#05070a]/95 backdrop-blur-[25px] border-l border-white/10 shadow-[-20px_0_50px_rgba(0,0,0,0.6)] animate-in slide-in-from-right duration-500 flex flex-col overflow-hidden font-['Poppins'] text-white"
                 onClick={(e) => e.stopPropagation()}
             >
                 {styleTag}

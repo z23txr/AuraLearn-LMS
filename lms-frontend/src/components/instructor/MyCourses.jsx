@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import axios from 'axios';
 import { FiPlus, FiEdit2, FiTrash2, FiEye, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 import AddCourseModal from './AddCourseModal.jsx'; 
 import CourseBuilder from './CourseBuilder.jsx';
 import CourseDetailsView from './CourseDetailView.jsx';
@@ -39,7 +40,21 @@ const MyCourses = () => {
     useEffect(() => { if (instructorId) fetchInstructorCourses(); }, [instructorId]);
 
     const handleDelete = async (courseId) => {
-        if (!window.confirm("Delete this course?")) return;
+        const result = await Swal.fire({
+            title: 'Delete this course?',
+            text: "This action is permanent. All resources and enrollments will be lost.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#334155',
+            confirmButtonText: 'Yes, delete it',
+            background: '#0f172a',
+            color: '#fff',
+            borderRadius: '20px'
+        });
+
+        if (!result.isConfirmed) return;
+
         try {
             await axios.delete(`http://localhost:5000/api/courses/delete/${courseId}`, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -60,15 +75,15 @@ const MyCourses = () => {
     if (viewingCourse) return <CourseDetailsView course={viewingCourse} onBack={() => setViewingCourse(null)} />;
 
     return (
-        <div className="p-12 bg-[#05070a] min-h-screen text-slate-50 font-['Outfit']">
-            <ToastContainer theme="dark" position="top-right" />
+        <div className="p-4 md:p-12 bg-[#05070a] min-h-screen text-slate-50 font-['Outfit']">
             
-            <div className="flex justify-between items-center mb-16 bg-white/5 p-8 rounded-3xl border border-white/10">
+            
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-16 bg-white/5 p-6 md:p-8 rounded-3xl border border-white/10">
                 <div>
-                    <h2 className="text-4xl font-extrabold text-white">My Courses</h2>
-                    <p className="text-slate-400">Manage your active curriculum</p>
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-white">My Courses</h2>
+                    <p className="text-slate-400 mt-2 md:mt-0">Manage your active curriculum</p>
                 </div>
-                <button className="bg-[#a855f7] text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3" onClick={() => setIsModalOpen(true)}>
+                <button className="w-full md:w-auto bg-[#a855f7] text-white px-8 py-4 rounded-2xl font-bold flex justify-center items-center gap-3" onClick={() => setIsModalOpen(true)}>
                     <FiPlus /> New Course
                 </button>
             </div>

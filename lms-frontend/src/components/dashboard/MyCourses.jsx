@@ -28,12 +28,13 @@ const MyCourses = () => {
     if (loading) return <div className="p-20 text-[#38bdf8] font-black animate-pulse text-center">ACCESSING YOUR LEARNING PATH...</div>;
 
     return (
-        <div className="p-8 animate-in fade-in duration-500 font-['Poppins']">
-            <div className="flex items-center gap-4 mb-10">
-                <div className="p-4 bg-[#38bdf8]/10 rounded-2xl text-[#38bdf8]">
-                    <FiPlayCircle size={32} />
+        <div className="p-4 sm:p-8 animate-in fade-in duration-500 font-['Poppins']">
+            <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-10">
+                <div className="p-3 sm:p-4 bg-[#38bdf8]/10 rounded-2xl text-[#38bdf8]">
+                    <FiPlayCircle size={24} className="sm:hidden" />
+                    <FiPlayCircle size={32} className="hidden sm:block" />
                 </div>
-                <h2 className="text-white text-3xl font-bold">My Learning Journey</h2>
+                <h2 className="text-white text-xl sm:text-3xl font-bold">My Learning Journey</h2>
             </div>
 
             {/* Filter enrolled courses based on search query */}
@@ -52,7 +53,7 @@ const MyCourses = () => {
                 });
 
                 return filteredEnrolled.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-8">
                         {filteredEnrolled.map(item => {
                             //  Dynamic lesson count calculation
                             const totalLessons = (item.courseId?.videoLectures?.length || 0) + 
@@ -68,14 +69,15 @@ const MyCourses = () => {
                                         status: item.status,
                                         enrollmentStatus: item.status,
                                         instructorName: item.teacherId?.name || "Instructor", 
-                                        lessonCount: totalLessons
+                                        lessonCount: totalLessons,
+                                        progress: item.progress || 0
                                     }} 
                                 />
                             );
                         })}
                     </div>
                 ) : (
-                    <div className="bg-white/[0.02] border border-white/5 p-20 rounded-[40px] text-center backdrop-blur-md">
+                    <div className="bg-white/[0.02] border border-white/5 p-10 sm:p-20 rounded-[30px] sm:rounded-[40px] text-center backdrop-blur-md">
                         <p className="text-slate-400 text-lg font-medium">
                             {searchQuery ? "No courses match your search." : "No courses enrolled or pending yet. Explore the library to begin!"}
                         </p>

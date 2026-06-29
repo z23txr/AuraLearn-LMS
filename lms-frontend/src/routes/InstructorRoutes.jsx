@@ -4,7 +4,7 @@ import MyCourses from "../components/instructor/MyCourses";
 import EnrollmentRequests from "../components/instructor/EnrollmentRequests"; 
 import ProtectedRoute from "../components/common/ProtectedRoute/ProtectedRoute";
 import StudentDirectory from "../components/instructor/StudentDirectory"; 
-import GradingCenter from "../components/instructor/GradingCenter"; 
+import GradingCenter from "../components/instructor/GradingCenter";
 
 const InstructorRoutes = [
   <Route 
@@ -25,7 +25,6 @@ const InstructorRoutes = [
     {/*  */}
    
     <Route path="grading-center" element={<GradingCenter />} />
-    <Route path="ai-assistant" element={<div>AI Command Center Component</div>} />
   </Route>
 ];
 

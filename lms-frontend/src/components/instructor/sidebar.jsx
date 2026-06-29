@@ -1,9 +1,9 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FiGrid, FiBook, FiUsers, FiCheckSquare, FiCpu, FiFileText, FiLogOut } from 'react-icons/fi';
+import { FiGrid, FiBook, FiUsers, FiCheckSquare, FiCpu, FiFileText, FiLogOut, FiMessageSquare } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 
-const Sidebar = () => {
+const Sidebar = ({ onClose }) => {
     const navigate = useNavigate();
 
     //  Logout Functionality
@@ -33,29 +33,26 @@ const Sidebar = () => {
             
             {/* Menu Links */}
             <div className="flex-1 overflow-y-auto no-scrollbar">
-                <NavLink to="/instructor-dashboard" end className={linkClasses}>
+                <NavLink to="/instructor-dashboard" end className={linkClasses} onClick={() => onClose && onClose()}>
                     <FiGrid className="text-[1.2rem]" /> <span>Overview</span>
                 </NavLink>
                 
-                <NavLink to="/instructor-dashboard/my-courses" className={linkClasses}>
+                <NavLink to="/instructor-dashboard/my-courses" className={linkClasses} onClick={() => onClose && onClose()}>
                     <FiBook className="text-[1.2rem]" /> <span>My Courses</span>
                 </NavLink>
 
-                <NavLink to="/instructor-dashboard/approvals" className={linkClasses}>
+                <NavLink to="/instructor-dashboard/approvals" className={linkClasses} onClick={() => onClose && onClose()}>
                     <FiCheckSquare className="text-[1.2rem]" /> <span>Enrollment Requests</span>
                 </NavLink>
 
-                <NavLink to="/instructor-dashboard/students" className={linkClasses}>
-                    <FiUsers className="text-[1.2rem]" /> <span>Student Directory</span>
+                <NavLink to="/instructor-dashboard/students" className={linkClasses} onClick={() => onClose && onClose()}>
+                    <FiUsers className="text-[1.2rem]" /> <span>Performance Analytics</span>
                 </NavLink>
 
-                <NavLink to="/instructor-dashboard/grading-center" className={linkClasses}>
+                <NavLink to="/instructor-dashboard/grading-center" className={linkClasses} onClick={() => onClose && onClose()}>
                     <FiFileText className="text-[1.2rem]" /> <span>Grading Center</span>
                 </NavLink>
 
-                <NavLink to="/instructor-dashboard/ai-assistant" className={linkClasses}>
-                    <FiCpu className="text-[1.2rem]" /> <span>AI Command Center</span>
-                </NavLink>
             </div>
 
             {/* Logout Section */}

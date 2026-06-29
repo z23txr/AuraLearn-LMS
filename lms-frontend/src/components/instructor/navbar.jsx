@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { FiBell, FiSearch, FiUser, FiX } from 'react-icons/fi';
+import { FiBell, FiSearch, FiUser, FiX, FiMenu } from 'react-icons/fi';
 import axios from 'axios';
 import InstructorProfile from './InstructorProfile'; 
 import NotificationPanel from '../dashboard/NotificationPanel';
 
-const Navbar = ({ setSearchQuery }) => {
+const Navbar = ({ setSearchQuery, onToggleSidebar }) => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isNotifOpen, setIsNotifOpen] = useState(false); 
     const [userName, setUserName] = useState('Instructor');
     const [notifications, setNotifications] = useState([]);
+    const [isSearchOpen, setIsSearchOpen] = useState(false); // Mobile search toggle
 
     const user = JSON.parse(localStorage.getItem('auraUser'));
 
@@ -42,19 +43,37 @@ const Navbar = ({ setSearchQuery }) => {
 
     return (
         <>
-            <header className="h-[70px] px-[30px] flex justify-between items-center border-b border-[#1e293b] bg-[#0b0e14] z-[100]">
-                {/* Functional Search Box */}
-                <div className="bg-[#1e293b] rounded-[10px] px-[15px] py-2 flex items-center gap-2.5 w-[350px]">
-                    <FiSearch className="text-[#94a3b8]" />
-                    <input 
-                        type="text" 
-                        placeholder="Search students, courses..." 
-                        className="bg-transparent border-none text-white outline-none w-full text-sm placeholder:text-[#64748b]"
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
+            <header className="h-[70px] px-4 lg:px-[30px] flex justify-between items-center border-b border-[#1e293b] bg-[#0b0e14] z-[99]">
+                
+                <div className="flex items-center gap-4">
+                    {/* Hamburger Menu (Mobile Only) */}
+                    <button 
+                        onClick={onToggleSidebar}
+                        className="lg:hidden text-[#94a3b8] hover:text-white p-2 bg-[#1e293b] rounded-lg transition-colors"
+                    >
+                        <FiMenu size={20} />
+                    </button>
+
+                    {/* Functional Search Box */}
+                    <div className="hidden md:flex bg-[#1e293b] rounded-[10px] px-[15px] py-2 items-center gap-2.5 w-[350px]">
+                        <FiSearch className="text-[#94a3b8]" />
+                        <input 
+                            type="text" 
+                            placeholder="Search students, courses..." 
+                            className="bg-transparent border-none text-white outline-none w-full text-sm placeholder:text-[#64748b]"
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
                 </div>
 
-                <div className="flex items-center gap-5">
+                <div className="flex items-center gap-3 md:gap-5">
+                    {/* Mobile Search Icon */}
+                    <button 
+                        onClick={() => setIsSearchOpen(!isSearchOpen)}
+                        className="md:hidden text-[#94a3b8] hover:text-white p-2 transition-colors"
+                    >
+                        <FiSearch size={20} />
+                    </button>
                     {/* Notification Bell Icon */}
                     <div className="relative text-[#94a3b8] text-[1.3rem] cursor-pointer hover:text-[#38bdf8] transition-colors" onClick={() => setIsNotifOpen(true)}>
                         <FiBell />
@@ -75,6 +94,21 @@ const Navbar = ({ setSearchQuery }) => {
                 </div>
             </header>
 
+            {/* Mobile Search Dropdown */}
+            {isSearchOpen && (
+                <div className="md:hidden bg-[#1e293b] p-4 border-b border-[#0b0e14]">
+                    <div className="bg-[#0b0e14] rounded-[10px] px-[15px] py-2 flex items-center gap-2.5 w-full border border-white/5">
+                        <FiSearch className="text-[#94a3b8]" />
+                        <input 
+                            type="text" 
+                            placeholder="Search students, courses..." 
+                            className="bg-transparent border-none text-white outline-none w-full text-sm placeholder:text-[#64748b]"
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                </div>
+            )}
+
             {/*  Updated NotificationPanel with userId prop */}
             <NotificationPanel 
                 isOpen={isNotifOpen} 
@@ -86,7 +120,7 @@ const Navbar = ({ setSearchQuery }) => {
 
             {/* Profile Drawer */}
             <div className={`fixed inset-0 w-full h-full bg-black/70 backdrop-blur-[4px] z-[1000] transition-all duration-400 ${isProfileOpen ? 'visible opacity-100' : 'invisible opacity-0'}`} onClick={() => setIsProfileOpen(false)}>
-                <div className={`fixed top-0 h-full w-[500px] bg-[#0f172a] z-[1001] border-l border-[#1e293b] flex flex-col transition-all duration-400 ${isProfileOpen ? 'right-0' : '-right-[700px]'}`} onClick={(e) => e.stopPropagation()}>
+                <div className={`fixed top-0 h-full w-full sm:w-[500px] sm:max-w-[500px] bg-[#0f172a] z-[1001] border-l border-[#1e293b] flex flex-col transition-all duration-400 ${isProfileOpen ? 'right-0' : '-right-[700px]'}`} onClick={(e) => e.stopPropagation()}>
                     <div className="p-5 border-b border-[#1e293b] flex justify-between items-center bg-[#1e293b]/50">
                         <h3 className="text-white m-0 text-[1.2rem] font-semibold tracking-tight">Instructor <span className="text-[#a855f7]">Profile</span></h3>
                         <button className="text-[#94a3b8] hover:text-[#ef4444]" onClick={() => setIsProfileOpen(false)}><FiX size={24} /></button>

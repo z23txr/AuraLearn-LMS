@@ -4,6 +4,8 @@ import Sidebar from '../../../components/dashboard/Sidebar';
 import Navbar from '../../../components/dashboard/Navbar';
 import NotificationPanel from '../../../components/dashboard/NotificationPanel';
 import StudentProfileDrawer from '../../../components/dashboard/StudentProfileDrawer';
+import { applyTheme } from '../../../utils/themeHelper';
+import ChatWidget from '../../../components/ChatWidget';
 
 const StudentDashboard = () => {
     const location = useLocation();
@@ -12,6 +14,12 @@ const StudentDashboard = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const user = JSON.parse(localStorage.getItem('auraUser') || '{}');
+    const userId = user?.id || user?._id;
+
+    useEffect(() => {
+        applyTheme(null, userId);
+    }, [userId]);
     
     const [isCollapsed, setIsCollapsed] = useState(() => {
         const savedState = localStorage.getItem('sidebar_collapsed');
@@ -46,8 +54,8 @@ const StudentDashboard = () => {
             <aside 
                 className={`h-full z-50 transition-all duration-300 ease-in-out shrink-0 
                     ${isMobile 
-                        ? `fixed top-0 left-0 h-full w-[260px] transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} shadow-2xl bg-[#0b0e14]` 
-                        : `${isCollapsed ? 'w-[80px]' : 'w-[260px]'}`
+                        ? `fixed top-0 left-0 h-full w-[230px] transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} shadow-2xl bg-[#0b0e14]` 
+                        : `${isCollapsed ? 'w-[72px]' : 'w-[230px]'}`
                     }`}
             >
                 <Sidebar 
@@ -92,6 +100,9 @@ const StudentDashboard = () => {
                     )}
                 </main>
             </div>
+            
+            {/* Global Chat Widget */}
+            <ChatWidget />
         </div>
     );
 };

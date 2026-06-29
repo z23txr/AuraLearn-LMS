@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+html, body {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar globally while keeping scroll functionality */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+html, body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
 @theme {
   @keyframes float {
     from { transform: translate(0, 0); }
@@ -51,4 +68,66 @@ input:-webkit-autofill:active {
 input:filter(autofill) {
     background-color: transparent !important;
 }
+}
+
+/* Global Aura Toast Theme */
+:root {
+  --toastify-color-dark: #0f172a;
+  --toastify-toast-width: 380px;
+  --toastify-z-index: 9999;
+}
+
+.aura-toast {
+  border-radius: 12px !important;
+  color: white !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important;
+  font-family: 'Poppins', sans-serif !important;
+  padding: 16px !important;
+}
+
+.aura-toast .Toastify__toast-body {
+  margin: 0;
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.aura-toast .Toastify__close-button {
+  color: white;
+  opacity: 0.5;
+  transition: 0.3s;
+}
+.aura-toast .Toastify__close-button:hover {
+  opacity: 1;
+}
+
+.aura-toast .Toastify__progress-bar {
+  background: var(--accent-color, #38bdf8) !important;
+}
+
+.aura-toast.Toastify__toast--success .Toastify__progress-bar {
+  background: linear-gradient(to right, #22c55e, #16a34a) !important;
+}
+.aura-toast.Toastify__toast--error .Toastify__progress-bar {
+  background: linear-gradient(to right, #ef4444, #dc2626) !important;
+}
+.aura-toast.Toastify__toast--info .Toastify__progress-bar {
+  background: linear-gradient(to right, var(--accent-color, #38bdf8), #a855f7) !important;
+}
+.aura-toast.Toastify__toast--warning .Toastify__progress-bar {
+  background: linear-gradient(to right, #f59e0b, #d97706) !important;
+}
+
+/* Mobile Toast Overrides */
+@media only screen and (max-width: 480px) {
+  .Toastify__toast-container {
+    width: 90vw !important;
+    left: 5vw !important;
+    padding: 0 !important;
+    top: 1rem !important;
+  }
+  .Toastify__toast {
+    border-radius: 16px !important;
+    margin-bottom: 12px !important;
+  }
 }

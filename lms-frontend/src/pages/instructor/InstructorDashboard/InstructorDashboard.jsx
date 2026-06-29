@@ -5,6 +5,7 @@ import Navbar from '../../../components/instructor/navbar';
 import Sidebar from '../../../components/instructor/sidebar';
 import StatCard from '../../../components/instructor/statcard';
 import { FiUsers, FiBook, FiClock, FiActivity, FiStar, FiTrendingUp } from 'react-icons/fi';
+import ChatWidget from '../../../components/ChatWidget';
 
 const InstructorDashboard = () => {
     const location = useLocation();
@@ -14,6 +15,7 @@ const InstructorDashboard = () => {
     const [topCourses, setTopCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState(""); 
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const user = JSON.parse(localStorage.getItem('auraUser')); 
     const isOverview = location.pathname === '/instructor-dashboard' || location.pathname === '/instructor-dashboard/';
@@ -74,7 +76,7 @@ const InstructorDashboard = () => {
     }, [isOverview, user.id, user._id]);
 
     return (
-        <div className="grid grid-cols-[280px_1fr] h-screen w-screen bg-[#0b0e14] overflow-hidden font-['Poppins']">
+        <div className="flex flex-col lg:grid lg:grid-cols-[230px_1fr] h-screen w-screen bg-[#0b0e14] overflow-hidden font-['Poppins']">
            
             <style>
                 {`
@@ -88,14 +90,22 @@ const InstructorDashboard = () => {
                 `}
             </style>
 
-            <aside className="border-r border-[#1e293b] bg-[#0f172a] z-50">
-                <Sidebar />
+            {/* Mobile Sidebar Overlay */}
+            {isSidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] lg:hidden"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+
+            <aside className={`fixed inset-y-0 left-0 w-[230px] border-r border-[#1e293b] bg-[#0f172a] z-[101] transform transition-transform duration-300 lg:static lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                <Sidebar onClose={() => setIsSidebarOpen(false)} />
             </aside>
 
-            <main className="flex flex-col overflow-hidden">
-                <Navbar setSearchQuery={setSearchQuery} />
+            <main className="flex-1 flex flex-col overflow-hidden relative">
+                <Navbar setSearchQuery={setSearchQuery} onToggleSidebar={() => setIsSidebarOpen(true)} />
 
-                <div className="flex-1 overflow-y-scroll hide-scrollbar p-[30px_40px]">
+                <div className="flex-1 overflow-y-scroll hide-scrollbar p-4 md:p-8 lg:p-[30px_40px]">
                     {isOverview && (
                         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                             <div className="mb-[30px]">
@@ -159,6 +169,9 @@ const InstructorDashboard = () => {
                     <Outlet context={{ searchQuery }} />
                 </div>
             </main>
+
+            {/* Global Chat Widget */}
+            <ChatWidget />
         </div>
     );
 };

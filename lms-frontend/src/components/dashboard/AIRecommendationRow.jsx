@@ -25,12 +25,12 @@ const AIRecommendationRow = ({ title, courses, enrolledCourses = [], aiPowered }
         <section className="mb-12 group animate-in fade-in slide-in-from-bottom-4 duration-700">
             
             {/* Row Header */}
-            <div className="flex justify-between items-end mb-6 px-1">
+            <div className="flex flex-row justify-between items-start sm:items-end mb-6 px-1 gap-2 sm:gap-4">
                 <div className="space-y-1">
-                    <h3 className="text-white text-2xl font-bold tracking-tight flex items-center gap-3">
+                    <h3 className="text-white text-lg sm:text-2xl font-bold tracking-tight flex items-center gap-2 sm:gap-3 flex-wrap">
                         {title} 
                         {aiPowered && (
-                            <span className="bg-gradient-to-r from-[#38bdf8] to-[#a855f7] text-white text-[0.65rem] uppercase font-black px-2.5 py-1 rounded-md tracking-[1px] shadow-[0_0_15px_rgba(56,189,248,0.3)] animate-pulse">
+                            <span className="bg-gradient-to-r from-[#38bdf8] to-[#a855f7] text-white text-[0.65rem] uppercase font-black px-2.5 py-1 rounded-md tracking-[1px] shadow-[0_0_15px_rgba(56,189,248,0.3)] animate-pulse shrink-0">
                                 AI Suggested
                             </span>
                         )}
@@ -38,16 +38,16 @@ const AIRecommendationRow = ({ title, courses, enrolledCourses = [], aiPowered }
                     <div className="h-1 w-12 bg-[#a855f7] rounded-full transition-all duration-500 group-hover:w-24"></div>
                 </div>
                 
-                <button className="text-[#38bdf8] text-sm font-semibold hover:text-white transition-colors flex items-center gap-1 group/btn">
+                <button className="text-[#38bdf8] text-xs sm:text-sm font-semibold hover:text-white transition-colors flex items-center gap-1 group/btn shrink-0 pt-1 sm:pt-0">
                     See All <span className="group-hover/btn:translate-x-1 transition-transform inline-block">→</span>
                 </button>
             </div>
 
             {/* Horizontal Scroll Container */}
-            <div className="flex gap-6 overflow-x-auto pb-6 scroll-smooth custom-scrollbar no-scrollbar select-none">
+            <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-6 scroll-smooth no-scrollbar select-none">
                 {recommendedCourses.length > 0 ? (
                     recommendedCourses.map((course, index) => (
-                        <div key={course._id || index} className="min-w-[300px] transition-transform duration-300 hover:-translate-y-2">
+                        <div key={course._id || index} className="min-w-[260px] sm:min-w-[300px] max-w-[320px] transition-transform duration-300 hover:-translate-y-2">
                             <CourseCard course={course} />
                         </div>
                     ))

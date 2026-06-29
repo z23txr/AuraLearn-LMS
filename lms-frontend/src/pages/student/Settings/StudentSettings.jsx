@@ -7,6 +7,247 @@ import {
     FiChevronRight, FiLogOut, FiEdit2, FiCamera,
     FiKey, FiActivity
 } from 'react-icons/fi';
+import { applyTheme } from '../../../utils/themeHelper';
+
+const t = {
+  en: {
+    settings: "Settings",
+    sub: "Manage your account, security, and preferences",
+    account: "Account",
+    security: "Security",
+    notifications: "Notifications",
+    appearance: "Appearance",
+    privacy: "Privacy",
+    signOut: "Sign Out",
+    personalInfo: "Personal Information",
+    personalInfoSub: "Your profile data — saved directly to the database",
+    fullName: "Full Name",
+    email: "Email Address",
+    emailHint: "Email cannot be changed",
+    fatherName: "Father's Name",
+    contact: "Contact Number",
+    contactHint: "Exactly 11 digits",
+    cnic: "CNIC / ID",
+    cnicHint: "Exactly 13 digits",
+    address: "City / Address",
+    saveChanges: "Save Changes",
+    saved: "Saved!",
+    saving: "Saving...",
+    changePassword: "Change Password",
+    pwSub: "Verified against your current password in real-time",
+    currPw: "Current Password",
+    newPw: "New Password",
+    confPw: "Confirm New Password",
+    strength: "Password Strength",
+    sessions: "Active Sessions",
+    sessionsSub: "Devices currently logged into your account",
+    dangerZone: "Danger Zone",
+    dangerZoneSub: "Irreversible actions — proceed with caution",
+    dangerZoneDesc: "Deleting your account will permanently erase all your enrollments, progress, certificates, and personal data from AuraLearn.",
+    deleteBtn: "Delete My Account",
+    deleteConfirmTitle: "Delete Account?",
+    deleteConfirmDesc: "Type DELETE to confirm permanently removing your account.",
+    cancel: "Cancel",
+    deleteForever: "Delete Forever",
+    theme: "Theme",
+    themeDark: "Dark Mode",
+    themeDarkDesc: "Default · Easy on eyes",
+    themeSystem: "System",
+    themeSystemDesc: "Follows OS",
+    language: "Language",
+    timezone: "Timezone",
+    fontSize: "Font Size",
+    fontSizeSmall: "Small",
+    fontSizeMedium: "Medium",
+    fontSizeLarge: "Large",
+    accentColor: "Accent Color",
+    accentColorSub: "Changes applied instantly",
+    prefSaved: "Preferences saved",
+    notifTitle: "Notification Preferences",
+    notifSub: "Saved locally — controls what alerts appear in your dashboard",
+    courseUpdates: "Course Content Updates",
+    courseUpdatesDesc: "Get notified when a course you enrolled in gets new content or updates.",
+    enrollmentStatus: "Enrollment Status Changes",
+    enrollmentStatusDesc: "Receive alerts when your enrollment request is approved or rejected by an instructor.",
+    aiTips: "AI Study Tips",
+    aiTipsDesc: "Weekly recommendations and study strategies from AuraStudy AI.",
+    emailDigest: "Email Activity Digest",
+    emailDigestDesc: "Daily or weekly summary of your learning activity sent to your email.",
+    newsletters: "Platform Announcements",
+    newslettersDesc: "AuraLearn product updates, new features, and platform newsletters.",
+    displayLang: "Display & Language",
+    displayLangSub: "Saved locally — applied across your dashboard session",
+    privacyTitle: "Privacy Controls",
+    privacySub: "Controls how your data is used within the platform",
+    showProfile: "Public Profile",
+    showProfileDesc: "Allow other students to see your name and learning progress on the platform.",
+    showActivity: "Activity Status",
+    showActivityDesc: "Display when you were last active so instructors can see your engagement.",
+    allowRecommendations: "AI Recommendations",
+    allowRecommendationsDesc: "Allow AuraStudy AI to analyze your learning patterns for personalized suggestions.",
+    shareLearningData: "Anonymous Analytics",
+    shareLearningDataDesc: "Contribute anonymized usage data to help improve platform features and quality.",
+    privacyFooter: "Your data is stored securely and is never sold to third parties. AuraLearn follows strict data protection standards."
+  },
+  ur: {
+    settings: "ترتیبات",
+    sub: "اپنے اکاؤنٹ، سیکیورٹی اور ترجیحات کا نظم کریں",
+    account: "اکاؤنٹ",
+    security: "سیکیورٹی",
+    notifications: "اطلاعات",
+    appearance: "ظاہری شکل",
+    privacy: "رازداری",
+    signOut: "لاگ آؤٹ",
+    personalInfo: "ذاتی معلومات",
+    personalInfoSub: "آپ کا پروفائل ڈیٹا — براہ راست ڈیٹا بیس میں محفوظ ہے",
+    fullName: "پورا نام",
+    email: "ای میل ایڈریس",
+    emailHint: "ای میل تبدیل نہیں کی جا سکتی",
+    fatherName: "والد کا نام",
+    contact: "رابطہ نمبر",
+    contactHint: "بالکل 11 ہندسے",
+    cnic: "شناختی کارڈ نمبر",
+    cnicHint: "بالکل 13 ہندسے",
+    address: "شہر / پتہ",
+    saveChanges: "تبدیلیاں محفوظ کریں",
+    saved: "محفوظ ہو گیا!",
+    saving: "محفوظ ہو رہا ہے...",
+    changePassword: "پاس ورڈ تبدیل کریں",
+    pwSub: "ریئل ٹائم میں آپ کے موجودہ پاس ورڈ کے خلاف تصدیق شدہ",
+    currPw: "موجودہ پاس ورڈ",
+    newPw: "نیا پاس ورڈ",
+    confPw: "نئے پاس ورڈ کی تصدیق کریں",
+    strength: "پاس ورڈ کی طاقت",
+    sessions: "فعال سیشنز",
+    sessionsSub: "وہ آلات جو فی الحال آپ کے اکاؤنٹ میں لاگ ان ہیں",
+    dangerZone: "خطرناک زون",
+    dangerZoneSub: "ناقابل واپسی اقدامات — احتیاط کے ساتھ آگے بڑھیں",
+    dangerZoneDesc: "اپنا اکاؤنٹ حذف کرنے سے آپ کے تمام داخلے، ترقی، سرٹیفکیٹ، اور ذاتی ڈیٹا ہمیشہ کے لیے حذف ہو جائے گا۔",
+    deleteBtn: "میرا اکاؤنٹ حذف کریں",
+    deleteConfirmTitle: "اکاؤنٹ حذف کریں؟",
+    deleteConfirmDesc: "اکاؤنٹ کو مستقل طور پر ہٹانے کی تصدیق کے لیے DELETE ٹائپ کریں۔",
+    cancel: "منسوخ کریں",
+    deleteForever: "ہمیشہ کے لیے حذف کریں",
+    theme: "تھیم",
+    themeDark: "ڈارک موڈ",
+    themeDarkDesc: "پہلے سے طے شدہ · آنکھوں پر آسان",
+    themeSystem: "سسٹم",
+    themeSystemDesc: "آپریٹنگ سسٹم کے مطابق",
+    language: "زبان",
+    timezone: "ٹائم زون",
+    fontSize: "فونٹ کا سائز",
+    fontSizeSmall: "چھوٹا",
+    fontSizeMedium: "درمیانہ",
+    fontSizeLarge: "بڑا",
+    accentColor: "نمایاں رنگ (Accent)",
+    accentColorSub: "تبدیلیاں فوراً لاگو ہو جائیں گی",
+    prefSaved: "ترجیحات محفوظ ہو گئیں",
+    notifTitle: "اطلاعات کی ترجیحات",
+    notifSub: "مقامی طور پر محفوظ — کنٹرول کرتا ہے کہ آپ کے ڈیش بورڈ میں کیا الرٹس ظاہر ہوں",
+    courseUpdates: "کورس کے مواد کی اپڈیٹس",
+    courseUpdatesDesc: "جب آپ کے رجسٹرڈ کورس میں نیا مواد یا اپڈیٹ شامل ہو تو مطلع کیا جائے۔",
+    enrollmentStatus: "اندراج کی حیثیت میں تبدیلیاں",
+    enrollmentStatusDesc: "جب آپ کی رجسٹریشن کی درخواست انسٹرکٹر کی طرف سے منظور یا مسترد ہو تو الرٹ حاصل کریں۔",
+    aiTips: "مصنوعی ذہانت (AI) کے مطالعہ کے مشورے",
+    aiTipsDesc: "ہفتہ وار سفارشات اور مطالعہ کی حکمت عملی AuraStudy AI کی طرف سے۔",
+    emailDigest: "ای میل سرگرمی کا خلاصہ",
+    emailDigestDesc: "آپ کی سیکھنے کی سرگرمی کا روزانہ یا ہفتہ وار خلاصہ آپ کے ای میل پر بھیجا جائے گا۔",
+    newsletters: "پلیٹ فارم کے اعلانات",
+    newslettersDesc: "AuraLearn کی پروڈکٹ اپڈیٹس، نئی خصوصیات، اور پلیٹ فارم کے خبرنامے۔",
+    displayLang: "ڈسپلے اور زبان",
+    displayLangSub: "مقامی طور پر محفوظ — آپ کے ڈیش بورڈ سیشن پر لاگو",
+    privacyTitle: "رازداری کے کنٹرولز",
+    privacySub: "پلیٹ فارم کے اندر آپ کا ڈیٹا کیسے استعمال ہوتا ہے اس کو کنٹرول کریں",
+    showProfile: "پبلک پروفائل",
+    showProfileDesc: "دوسرے طلباء کو پلیٹ فارم پر آپ کا نام اور سیکھنے کی ترقی دیکھنے کی اجازت دیں۔",
+    showActivity: "سرگرمی کی حیثیت",
+    showActivityDesc: "ظاہر کریں کہ آپ آخری بار کب سرگرم تھے تاکہ اساتذہ آپ کی مصروفیت دیکھ سکیں۔",
+    allowRecommendations: "اے آئی سفارشات",
+    allowRecommendationsDesc: "شخصی نوعیت کی تجاویز کے لیے AuraStudy AI کو آپ کے سیکھنے کے پیٹرن کا تجزیہ کرنے کی اجازت دیں۔",
+    shareLearningData: "گمنام تجزیات",
+    shareLearningDataDesc: "پلیٹ فارم کی خصوصیات اور معیار کو بہتر بنانے میں مدد کے لیے گمنام استعمال کا ڈیٹا فراہم کریں۔",
+    privacyFooter: "آپ کا ڈیٹا محفوظ طریقے سے اسٹور کیا جاتا ہے اور کبھی بھی تیسرے فریق کو فروخت نہیں کیا جاتا۔ AuraLearn سخت ڈیٹا پروٹیکشن کے اصولوں پر عمل کرتا ہے۔"
+  },
+  ar: {
+    settings: "الإعدادات",
+    sub: "إدارة حسابك وأمانك وتفضيلاتك",
+    account: "الحساب",
+    security: "الأمان",
+    notifications: "الإشعارات",
+    appearance: "المظهر",
+    privacy: "الخصوصية",
+    signOut: "تسجيل الخروج",
+    personalInfo: "معلومات شخصية",
+    personalInfoSub: "بيانات ملفك الشخصي — محفوظة مباشرة في قاعدة البيانات",
+    fullName: "الاسم الكامل",
+    email: "البريد الإلكتروني",
+    emailHint: "لا يمكن تغيير البريد الإلكتروني",
+    fatherName: "اسم الأب",
+    contact: "رقم الاتصال",
+    contactHint: "بالضبط 11 رقماً",
+    cnic: "الرقم القومي / الهوية",
+    cnicHint: "بالضبط 13 رقماً",
+    address: "المدينة / العنوان",
+    saveChanges: "حفظ التغييرات",
+    saved: "تم الحفظ!",
+    saving: "جاري الحفظ...",
+    changePassword: "تغيير كلمة المرور",
+    pwSub: "التحقق من كلمة المرور الحالية في الوقت الفعلي",
+    currPw: "كلمة المرور الحالية",
+    newPw: "كلمة مرور جديدة",
+    confPw: "تأكيد كلمة المرور الجديدة",
+    strength: "قوة كلمة المرور",
+    sessions: "الجلسات النشطة",
+    sessionsSub: "الأجهزة المسجلة حالياً في حسابك",
+    dangerZone: "منطقة الخطر",
+    dangerZoneSub: "إجراءات لا رجعة فيها — تابع بحذر",
+    dangerZoneDesc: "حذف حسابك سيؤدي نهائياً إلى محو جميع عمليات التسجيل والتقدم والشهادات والبيانات الشخصية من AuraLearn.",
+    deleteBtn: "احذف حسابي",
+    deleteConfirmTitle: "حذف الحساب؟",
+    deleteConfirmDesc: "اكتب DELETE لتأكيد إزالة حسابك بشكل دائم.",
+    cancel: "إلغاء",
+    deleteForever: "حذف نهائي",
+    theme: "المظهر",
+    themeDark: "الوضع الداكن",
+    themeDarkDesc: "افتراضي · مريح للعينين",
+    themeSystem: "النظام",
+    themeSystemDesc: "يتبع نظام التشغيل",
+    language: "اللغة",
+    timezone: "المنطقة الزمنية",
+    fontSize: "حجم الخط",
+    fontSizeSmall: "صغير",
+    fontSizeMedium: "متوسط",
+    fontSizeLarge: "كبير",
+    accentColor: "لون التأكيد (Accent)",
+    accentColorSub: "يتم تطبيق التغييرات على الفور",
+    prefSaved: "تم حفظ التفضيلات",
+    notifTitle: "تفضيلات الإشعارات",
+    notifSub: "تم الحفظ محلياً — للتحكم في التنبيهات التي تظهر في لوحة التحكم الخاصة بك",
+    courseUpdates: "تحديثات محتوى الكورس",
+    courseUpdatesDesc: "تلقي إشعارات عندما يحصل الكورس الذي سجلت فيه على محتوى جديد أو تحديثات.",
+    enrollmentStatus: "تغييرات حالة التسجيل",
+    enrollmentStatusDesc: "تلقي تنبيهات عندما يتم قبول طلب التسجيل الخاص بك أو رفضه من قبل المعلم.",
+    aiTips: "نصائح الدراسة بالذكاء الاصطناعي",
+    aiTipsDesc: "توصيات واستراتيجيات دراسية أسبوعية من AuraStudy AI.",
+    emailDigest: "ملخص النشاط عبر البريد الإلكتروني",
+    emailDigestDesc: "ملخص يومي أو أسبوعي لنشاطك التعليمي يتم إرساله إلى بريدك الإلكتروني.",
+    newsletters: "إعلانات المنصة",
+    newslettersDesc: "تحديثات منتجات AuraLearn، والميزات الجديدة، ونشرات المنصة الإخبارية.",
+    displayLang: "الشاشة واللغة",
+    displayLangSub: "تم الحفظ محلياً — يتم تطبيقه عبر جلسة لوحة التحكم الخاصة بك",
+    privacyTitle: "عناصر التحكم في الخصوصية",
+    privacySub: "التحكم في كيفية استخدام بياناتك داخل المنصة",
+    showProfile: "الملف الشخصي العام",
+    showProfileDesc: "السماح للطلاب الآخرين برؤية اسمك وتقدمك التعليمي على المنصة.",
+    showActivity: "حالة النشاط",
+    showActivityDesc: "عرض آخر مرة كنت نشطاً فيها حتى يتمكن المعلمون من رؤية مشاركتك.",
+    allowRecommendations: "توصيات الذكاء الاصطناعي",
+    allowRecommendationsDesc: "السماح لـ AuraStudy AI بتحليل أنماط التعلم الخاصة بك للحصول على اقتراحات مخصصة.",
+    shareLearningData: "التحليلات المجهولة",
+    shareLearningDataDesc: "المساهمة ببيانات الاستخدام المجهولة للمساعدة في تحسين ميزات وجودة المنصة.",
+    privacyFooter: "يتم تخزين بياناتك بشكل آمن ولا يتم بيعها مطلقاً لأطراف ثالثة. يتبع AuraLearn معايير صارمة لحماية البيانات."
+  }
+};
 
 const API = 'http://localhost:5000/api';
 
@@ -150,9 +391,25 @@ const StudentSettings = () => {
     const [appear, setAppear] = useState(() => {
         try { return JSON.parse(localStorage.getItem(appearKey)) || {}; } catch { return {}; }
     });
-    const appearDefaults = { language: 'en', timezone: 'PKT', fontSize: 'medium', accent: '#38bdf8' };
+    const appearDefaults = { language: 'en', timezone: 'PKT', fontSize: 'medium', accent: '#38bdf8', theme: 'dark' };
     const appearState = { ...appearDefaults, ...appear };
     const [appearSaved, setAppearSaved] = useState(false);
+
+    /* ── Privacy (localStorage) ── */
+    const privKey = `aura_privacy_${userId}`;
+    const [privacy, setPrivacy] = useState(() => {
+        try { return JSON.parse(localStorage.getItem(privKey)) || {}; } catch { return {}; }
+    });
+    const privacyDefaults = { showProfile: true, showActivity: false, allowRecommendations: true, shareLearningData: false };
+    const privacyState = { ...privacyDefaults, ...privacy };
+    const [privacySaved, setPrivacySaved] = useState(false);
+
+    const savePrivacy = (newState) => {
+        localStorage.setItem(privKey, JSON.stringify(newState));
+        setPrivacy(newState);
+        setPrivacySaved(true);
+        setTimeout(() => setPrivacySaved(false), 2500);
+    };
 
     /* ── Delete modal ── */
     const [deleteConfirm, setDeleteConfirm] = useState('');
@@ -242,21 +499,25 @@ const StudentSettings = () => {
         setTimeout(() => setNotifSaved(false), 2500);
     };
 
-    /* Save appearance prefs to localStorage */
+    /* Save appearance prefs to localStorage and apply dynamically */
     const saveAppear = (newState) => {
         localStorage.setItem(appearKey, JSON.stringify(newState));
         setAppear(newState);
+        applyTheme(newState, userId);
         setAppearSaved(true);
         setTimeout(() => setAppearSaved(false), 2500);
     };
 
+    const lang = appearState.language || 'en';
+    const s = t[lang] || t['en'];
+
     /* ──────── TAB DATA ──────── */
     const tabs = [
-        { id: 'account',       label: 'Account',       icon: <FiUser size={15} /> },
-        { id: 'security',      label: 'Security',      icon: <FiLock size={15} /> },
-        { id: 'notifications', label: 'Notifications', icon: <FiBell size={15} /> },
-        { id: 'appearance',    label: 'Appearance',    icon: <FiMonitor size={15} /> },
-        { id: 'privacy',       label: 'Privacy',       icon: <FiEye size={15} /> },
+        { id: 'account',       label: s.account,       icon: <FiUser size={15} /> },
+        { id: 'security',      label: s.security,      icon: <FiLock size={15} /> },
+        { id: 'notifications', label: s.notifications, icon: <FiBell size={15} /> },
+        { id: 'appearance',    label: s.appearance,    icon: <FiMonitor size={15} /> },
+        { id: 'privacy',       label: s.privacy,       icon: <FiEye size={15} /> },
     ];
 
     const accents = ['#38bdf8', '#a855f7', '#22c55e', '#f59e0b', '#ef4444', '#ec4899'];
@@ -267,8 +528,8 @@ const StudentSettings = () => {
             {/* ── Header ── */}
             <div className="mb-8 flex items-start justify-between">
                 <div>
-                    <h1 className="text-white text-2xl font-black tracking-tight">Settings</h1>
-                    <p className="text-slate-500 text-sm mt-1">Manage your account, security, and preferences</p>
+                    <h1 className="text-white text-2xl font-black tracking-tight">{s.settings}</h1>
+                    <p className="text-slate-500 text-sm mt-1">{s.sub}</p>
                 </div>
             </div>
 
@@ -277,8 +538,8 @@ const StudentSettings = () => {
                 {/* ── LEFT: Profile Card + Tabs ── */}
                 <div className="w-full lg:w-[240px] xl:w-[260px] shrink-0 flex flex-col gap-4">
 
-                    {/* Profile identity card */}
-                    <div className="bg-[#0a0f1e] border border-white/8 rounded-3xl p-5 relative overflow-hidden">
+                    {/* Profile identity card — hidden on mobile, shown on lg */}
+                    <div className="hidden lg:block bg-[#0a0f1e] border border-white/8 rounded-3xl p-5 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-[#38bdf8]/5 blur-[60px] rounded-full pointer-events-none" />
                         <div className="flex flex-col items-center text-center gap-3 relative">
                             <div className="relative">
@@ -299,22 +560,22 @@ const StudentSettings = () => {
                         </div>
                     </div>
 
-                    {/* Nav tabs */}
+                    {/* Nav tabs — horizontal scroll on mobile, vertical on lg */}
                     <div className="bg-[#0a0f1e] border border-white/8 rounded-3xl p-2">
-                        <nav className="flex flex-col gap-1">
+                        <nav className="flex flex-row lg:flex-col gap-1 overflow-x-auto no-scrollbar">
                             {tabs.map(t => (
                                 <button
                                     key={t.id}
                                     onClick={() => setTab(t.id)}
-                                    className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer w-full text-left ${
+                                    className={`flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2.5 lg:py-3 rounded-2xl text-xs lg:text-sm font-medium transition-all cursor-pointer shrink-0 lg:w-full text-left ${
                                         tab === t.id
                                             ? 'bg-[#38bdf8]/10 text-[#38bdf8] border border-[#38bdf8]/20'
                                             : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                     }`}
                                 >
                                     <span className="shrink-0">{t.icon}</span>
-                                    <span>{t.label}</span>
-                                    {tab === t.id && <FiChevronRight size={12} className="ml-auto opacity-60" />}
+                                    <span className="whitespace-nowrap">{t.label}</span>
+                                    {tab === t.id && <FiChevronRight size={12} className="ml-auto opacity-60 hidden lg:block" />}
                                 </button>
                             ))}
                         </nav>
@@ -327,7 +588,7 @@ const StudentSettings = () => {
                             className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:text-red-400 hover:bg-red-500/5 text-sm font-medium transition-all cursor-pointer w-full"
                         >
                             <FiLogOut size={15} />
-                            Sign Out
+                            {s.signOut}
                         </button>
                     </div>
                 </div>
@@ -344,14 +605,14 @@ const StudentSettings = () => {
                                     <FiUser size={16} />
                                 </div>
                                 <div>
-                                    <h3 className="text-white font-bold text-sm">Personal Information</h3>
-                                    <p className="text-slate-600 text-[11px]">Your profile data — saved directly to the database</p>
+                                    <h3 className="text-white font-bold text-sm">{s.personalInfo}</h3>
+                                    <p className="text-slate-600 text-[11px]">{s.personalInfoSub}</p>
                                 </div>
                             </div>
 
                             <div className="p-6 space-y-5">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                    <Field label="Full Name">
+                                    <Field label={s.fullName}>
                                         <TextInput
                                             value={profile.fullName}
                                             onChange={v => setProfile(p => ({ ...p, fullName: v.replace(/[^a-zA-Z\s]/g, '') }))}
@@ -359,10 +620,10 @@ const StudentSettings = () => {
                                             icon={<FiUser size={13} />}
                                         />
                                     </Field>
-                                    <Field label="Email Address" hint="Email cannot be changed">
+                                    <Field label={s.email} hint={s.emailHint}>
                                         <TextInput value={user?.email || ''} disabled icon={<FiMail size={13} />} />
                                     </Field>
-                                    <Field label="Father's Name">
+                                    <Field label={s.fatherName}>
                                         <TextInput
                                             value={profile.fatherName}
                                             onChange={v => setProfile(p => ({ ...p, fatherName: v.replace(/[^a-zA-Z\s]/g, '') }))}
@@ -370,7 +631,7 @@ const StudentSettings = () => {
                                             icon={<FiUser size={13} />}
                                         />
                                     </Field>
-                                    <Field label="Contact Number" hint="Exactly 11 digits">
+                                    <Field label={s.contact} hint={s.contactHint}>
                                         <TextInput
                                             value={profile.contact}
                                             onChange={v => setProfile(p => ({ ...p, contact: v.replace(/\D/g, '').slice(0, 11) }))}
@@ -378,7 +639,7 @@ const StudentSettings = () => {
                                             icon={<FiSmartphone size={13} />}
                                         />
                                     </Field>
-                                    <Field label="CNIC / ID" hint="Exactly 13 digits">
+                                    <Field label={s.cnic} hint={s.cnicHint}>
                                         <TextInput
                                             value={profile.cnic}
                                             onChange={v => setProfile(p => ({ ...p, cnic: v.replace(/\D/g, '').slice(0, 13) }))}
@@ -386,7 +647,7 @@ const StudentSettings = () => {
                                             icon={<FiShield size={13} />}
                                         />
                                     </Field>
-                                    <Field label="City / Address">
+                                    <Field label={s.address}>
                                         <TextInput
                                             value={profile.address}
                                             onChange={v => setProfile(p => ({ ...p, address: v }))}
@@ -399,7 +660,7 @@ const StudentSettings = () => {
                                 <StatusMsg msg={profileMsg} />
 
                                 <div className="pt-1">
-                                    <SaveBtn onClick={saveProfile} loading={profileLoading} success={profileSaved} />
+                                    <SaveBtn onClick={saveProfile} loading={profileLoading} success={profileSaved} label={s.saveChanges} />
                                 </div>
                             </div>
                         </div>
@@ -415,14 +676,14 @@ const StudentSettings = () => {
                                         <FiKey size={16} />
                                     </div>
                                     <div>
-                                        <h3 className="text-white font-bold text-sm">Change Password</h3>
-                                        <p className="text-slate-600 text-[11px]">Verified against your current password in real-time</p>
+                                        <h3 className="text-white font-bold text-sm">{s.changePassword}</h3>
+                                        <p className="text-slate-600 text-[11px]">{s.pwSub}</p>
                                     </div>
                                 </div>
                                 <div className="p-6 space-y-4 max-w-md">
-                                    <PwField label="Current Password" value={pw.current} onChange={v => setPw(p => ({ ...p, current: v }))} />
-                                    <PwField label="New Password" value={pw.newPass} onChange={v => setPw(p => ({ ...p, newPass: v }))} />
-                                    <PwField label="Confirm New Password" value={pw.confirm} onChange={v => setPw(p => ({ ...p, confirm: v }))} />
+                                    <PwField label={s.currPw} value={pw.current} onChange={v => setPw(p => ({ ...p, current: v }))} />
+                                    <PwField label={s.newPw} value={pw.newPass} onChange={v => setPw(p => ({ ...p, newPass: v }))} />
+                                    <PwField label={s.confPw} value={pw.confirm} onChange={v => setPw(p => ({ ...p, confirm: v }))} />
 
                                     {/* Strength indicator */}
                                     {pw.newPass && (
@@ -436,13 +697,13 @@ const StudentSettings = () => {
                                                 })}
                                             </div>
                                             <p className="text-[10px] text-slate-600">
-                                                {pw.newPass.length < 6 ? 'Too short' : pw.newPass.length < 9 ? 'Fair' : /[A-Z]/.test(pw.newPass) && /\d/.test(pw.newPass) ? 'Strong' : 'Good'}
+                                                {pw.newPass.length < 6 ? (s.themeSystemDesc /* borrowing description or default */ ? 'Too short' : 'Too short') : pw.newPass.length < 9 ? 'Fair' : /[A-Z]/.test(pw.newPass) && /\d/.test(pw.newPass) ? 'Strong' : 'Good'}
                                             </p>
                                         </div>
                                     )}
 
                                     <StatusMsg msg={pwMsg} />
-                                    <SaveBtn onClick={changePassword} loading={pwLoading} success={pwSaved} label="Update Password" />
+                                    <SaveBtn onClick={changePassword} loading={pwLoading} success={pwSaved} label={s.changePassword} />
                                 </div>
                             </div>
 
@@ -453,23 +714,23 @@ const StudentSettings = () => {
                                         <FiActivity size={16} />
                                     </div>
                                     <div>
-                                        <h3 className="text-white font-bold text-sm">Active Sessions</h3>
-                                        <p className="text-slate-600 text-[11px]">Devices currently logged into your account</p>
+                                        <h3 className="text-white font-bold text-sm">{s.sessions}</h3>
+                                        <p className="text-slate-600 text-[11px]">{s.sessionsSub}</p>
                                     </div>
                                 </div>
                                 <div className="p-6 space-y-3">
                                     {[
                                         { device: 'Chrome on Windows', location: 'Lahore, Pakistan', time: 'Active now', current: true },
-                                    ].map((s, i) => (
+                                    ].map((sItem, i) => (
                                         <div key={i} className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
                                             <div className="flex items-center gap-3">
-                                                <div className={`w-2.5 h-2.5 rounded-full ${s.current ? 'bg-green-400 shadow-[0_0_6px_#4ade80]' : 'bg-slate-600'}`} />
+                                                <div className={`w-2.5 h-2.5 rounded-full ${sItem.current ? 'bg-green-400 shadow-[0_0_6px_#4ade80]' : 'bg-slate-600'}`} />
                                                 <div>
-                                                    <p className="text-white text-sm font-medium">{s.device}</p>
-                                                    <p className="text-slate-600 text-[11px]">{s.location} · {s.time}</p>
+                                                    <p className="text-white text-sm font-medium">{sItem.device}</p>
+                                                    <p className="text-slate-600 text-[11px]">{sItem.location} · {sItem.time}</p>
                                                 </div>
                                             </div>
-                                            {s.current && (
+                                            {sItem.current && (
                                                 <span className="text-[9px] text-green-400 font-black uppercase tracking-[2px] bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">This Device</span>
                                             )}
                                         </div>
@@ -484,20 +745,20 @@ const StudentSettings = () => {
                                         <FiAlertTriangle size={16} />
                                     </div>
                                     <div>
-                                        <h3 className="text-red-400 font-bold text-sm">Danger Zone</h3>
-                                        <p className="text-slate-600 text-[11px]">Irreversible actions — proceed with caution</p>
+                                        <h3 className="text-red-400 font-bold text-sm">{s.dangerZone}</h3>
+                                        <p className="text-slate-600 text-[11px]">{s.dangerZoneSub}</p>
                                     </div>
                                 </div>
                                 <div className="p-6">
                                     <p className="text-slate-500 text-sm leading-relaxed mb-5">
-                                        Deleting your account will permanently erase all your enrollments, progress, certificates, and personal data from AuraLearn.
+                                        {s.dangerZoneDesc}
                                     </p>
                                     <button
                                         onClick={() => setShowDelete(true)}
                                         className="flex items-center gap-2.5 px-5 py-3 border border-red-500/30 bg-red-500/5 hover:bg-red-500/15 text-red-400 text-sm font-bold rounded-2xl transition-all cursor-pointer"
                                     >
                                         <FiTrash2 size={15} />
-                                        Delete My Account
+                                        {s.deleteBtn}
                                     </button>
                                 </div>
                             </div>
@@ -512,17 +773,17 @@ const StudentSettings = () => {
                                     <FiBell size={16} />
                                 </div>
                                 <div>
-                                    <h3 className="text-white font-bold text-sm">Notification Preferences</h3>
-                                    <p className="text-slate-600 text-[11px]">Saved locally — controls what alerts appear in your dashboard</p>
+                                    <h3 className="text-white font-bold text-sm">{s.notifTitle}</h3>
+                                    <p className="text-slate-600 text-[11px]">{s.notifSub}</p>
                                 </div>
                             </div>
 
                             {[
-                                { key: 'courseUpdates', label: 'Course Content Updates', desc: 'Get notified when a course you enrolled in gets new content or updates.' },
-                                { key: 'enrollmentStatus', label: 'Enrollment Status Changes', desc: 'Receive alerts when your enrollment request is approved or rejected by an instructor.' },
-                                { key: 'aiTips', label: 'AI Study Tips', desc: 'Weekly recommendations and study strategies from AuraStudy AI.' },
-                                { key: 'emailDigest', label: 'Email Activity Digest', desc: 'Daily or weekly summary of your learning activity sent to your email.' },
-                                { key: 'newsletters', label: 'Platform Announcements', desc: 'AuraLearn product updates, new features, and platform newsletters.' },
+                                { key: 'courseUpdates', label: s.courseUpdates, desc: s.courseUpdatesDesc },
+                                { key: 'enrollmentStatus', label: s.enrollmentStatus, desc: s.enrollmentStatusDesc },
+                                { key: 'aiTips', label: s.aiTips, desc: s.aiTipsDesc },
+                                { key: 'emailDigest', label: s.emailDigest, desc: s.emailDigestDesc },
+                                { key: 'newsletters', label: s.newsletters, desc: s.newslettersDesc },
                             ].map((item, i, arr) => (
                                 <div key={item.key} className={`flex items-start justify-between gap-4 px-6 py-5 ${i < arr.length - 1 ? 'border-b border-white/5' : ''}`}>
                                     <div>
@@ -542,7 +803,7 @@ const StudentSettings = () => {
                             <div className="px-6 py-4 border-t border-white/5 flex items-center gap-3">
                                 {notifSaved && (
                                     <div className="flex items-center gap-2 text-green-400 text-xs animate-in fade-in duration-300">
-                                        <FiCheck size={13} /> Preferences saved
+                                        <FiCheck size={13} /> {s.prefSaved}
                                     </div>
                                 )}
                             </div>
@@ -558,31 +819,31 @@ const StudentSettings = () => {
                                         <FiMonitor size={16} />
                                     </div>
                                     <div>
-                                        <h3 className="text-white font-bold text-sm">Display & Language</h3>
-                                        <p className="text-slate-600 text-[11px]">Saved locally — applied across your dashboard session</p>
+                                        <h3 className="text-white font-bold text-sm">{s.displayLang}</h3>
+                                        <p className="text-slate-600 text-[11px]">{s.displayLangSub}</p>
                                     </div>
                                 </div>
                                 <div className="p-6 space-y-7">
                                     {/* Theme */}
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-3">Theme</label>
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-3">{s.theme}</label>
                                         <div className="grid grid-cols-2 gap-3 max-w-sm">
                                             {[
-                                                { id: 'dark', label: 'Dark Mode', icon: <FiMoon size={18} />, desc: 'Default · Easy on eyes' },
-                                                { id: 'system', label: 'System', icon: <FiMonitor size={18} />, desc: 'Follows OS' },
-                                            ].map(t => (
+                                                { id: 'dark', label: s.themeDark, icon: <FiMoon size={18} />, desc: s.themeDarkDesc },
+                                                { id: 'system', label: s.themeSystem, icon: <FiMonitor size={18} />, desc: s.themeSystemDesc },
+                                            ].map(themeItem => (
                                                 <button
-                                                    key={t.id}
-                                                    onClick={() => saveAppear({ ...appearState, theme: t.id })}
+                                                    key={themeItem.id}
+                                                    onClick={() => saveAppear({ ...appearState, theme: themeItem.id })}
                                                     className={`flex flex-col items-center gap-2 p-5 rounded-2xl border transition-all cursor-pointer ${
-                                                        appearState.theme === t.id
+                                                        appearState.theme === themeItem.id
                                                             ? 'bg-[#38bdf8]/10 border-[#38bdf8]/40 text-[#38bdf8]'
                                                             : 'bg-white/[0.02] border-white/8 text-slate-500 hover:border-white/20 hover:text-slate-300'
                                                     }`}
                                                 >
-                                                    {t.icon}
-                                                    <span className="text-xs font-bold">{t.label}</span>
-                                                    <span className="text-[10px] opacity-60">{t.desc}</span>
+                                                    {themeItem.icon}
+                                                    <span className="text-xs font-bold">{themeItem.label}</span>
+                                                    <span className="text-[10px] opacity-60">{themeItem.desc}</span>
                                                 </button>
                                             ))}
                                         </div>
@@ -592,16 +853,16 @@ const StudentSettings = () => {
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                                         {[
                                             {
-                                                label: 'Language', key: 'language',
+                                                label: s.language, key: 'language',
                                                 options: [{ value: 'en', label: 'English' }, { value: 'ur', label: 'Urdu' }, { value: 'ar', label: 'Arabic' }]
                                             },
                                             {
-                                                label: 'Timezone', key: 'timezone',
+                                                label: s.timezone, key: 'timezone',
                                                 options: [{ value: 'PKT', label: 'PKT (UTC+5)' }, { value: 'UTC', label: 'UTC' }, { value: 'EST', label: 'EST' }, { value: 'PST', label: 'PST' }]
                                             },
                                             {
-                                                label: 'Font Size', key: 'fontSize',
-                                                options: [{ value: 'small', label: 'Small' }, { value: 'medium', label: 'Medium' }, { value: 'large', label: 'Large' }]
+                                                label: s.fontSize, key: 'fontSize',
+                                                options: [{ value: 'small', label: s.fontSizeSmall }, { value: 'medium', label: s.fontSizeMedium }, { value: 'large', label: s.fontSizeLarge }]
                                             },
                                         ].map(sel => (
                                             <Field key={sel.key} label={sel.label}>
@@ -621,7 +882,7 @@ const StudentSettings = () => {
 
                                     {/* Accent colors */}
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-3">Accent Color</label>
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-3">{s.accentColor}</label>
                                         <div className="flex gap-3 flex-wrap">
                                             {accents.map(c => (
                                                 <button
@@ -636,12 +897,12 @@ const StudentSettings = () => {
                                                 </button>
                                             ))}
                                         </div>
-                                        <p className="text-slate-700 text-[10px] mt-2">Changes applied instantly</p>
+                                        <p className="text-slate-700 text-[10px] mt-2">{s.accentColorSub}</p>
                                     </div>
 
                                     {appearSaved && (
                                         <div className="flex items-center gap-2 text-green-400 text-xs animate-in fade-in duration-300">
-                                            <FiCheck size={13} /> Preferences saved
+                                            <FiCheck size={13} /> {s.prefSaved}
                                         </div>
                                     )}
                                 </div>
@@ -657,43 +918,35 @@ const StudentSettings = () => {
                                     <FiEye size={16} />
                                 </div>
                                 <div>
-                                    <h3 className="text-white font-bold text-sm">Privacy Controls</h3>
-                                    <p className="text-slate-600 text-[11px]">Controls how your data is used within the platform</p>
+                                    <h3 className="text-white font-bold text-sm">{s.privacyTitle}</h3>
+                                    <p className="text-slate-600 text-[11px]">{s.privacySub}</p>
                                 </div>
                             </div>
 
                             {[
-                                { key: 'showProfile', label: 'Public Profile', desc: 'Allow other students to see your name and learning progress on the platform.' },
-                                { key: 'showActivity', label: 'Activity Status', desc: 'Display when you were last active so instructors can see your engagement.' },
-                                { key: 'allowRecommendations', label: 'AI Recommendations', desc: 'Allow AuraStudy AI to analyze your learning patterns for personalized suggestions.' },
-                                { key: 'shareLearningData', label: 'Anonymous Analytics', desc: 'Contribute anonymized usage data to help improve platform features and quality.' },
-                            ].map((item, i, arr) => {
-                                const privKey = `aura_privacy_${userId}`;
-                                const stored = (() => { try { return JSON.parse(localStorage.getItem(privKey)) || {}; } catch { return {}; } })();
-                                const defaults = { showProfile: true, showActivity: false, allowRecommendations: true, shareLearningData: false };
-                                const val = { ...defaults, ...stored }[item.key];
-                                return (
-                                    <div key={item.key} className={`flex items-start justify-between gap-4 px-6 py-5 ${i < arr.length - 1 ? 'border-b border-white/5' : ''}`}>
-                                        <div>
-                                            <p className="text-slate-200 text-sm font-medium">{item.label}</p>
-                                            <p className="text-slate-600 text-xs mt-1 leading-relaxed max-w-sm">{item.desc}</p>
-                                        </div>
-                                        <Toggle
-                                            checked={val}
-                                            onChange={newVal => {
-                                                const next = { ...defaults, ...stored, [item.key]: newVal };
-                                                localStorage.setItem(privKey, JSON.stringify(next));
-                                                // force re-render
-                                                setTab(t => t);
-                                            }}
-                                        />
+                                { key: 'showProfile', label: s.showProfile, desc: s.showProfileDesc },
+                                { key: 'showActivity', label: s.showActivity, desc: s.showActivityDesc },
+                                { key: 'allowRecommendations', label: s.allowRecommendations, desc: s.allowRecommendationsDesc },
+                                { key: 'shareLearningData', label: s.shareLearningData, desc: s.shareLearningDataDesc },
+                            ].map((item, i, arr) => (
+                                <div key={item.key} className={`flex items-start justify-between gap-4 px-6 py-5 ${i < arr.length - 1 ? 'border-b border-white/5' : ''}`}>
+                                    <div>
+                                        <p className="text-slate-200 text-sm font-medium">{item.label}</p>
+                                        <p className="text-slate-600 text-xs mt-1 leading-relaxed max-w-sm">{item.desc}</p>
                                     </div>
-                                );
-                            })}
+                                    <Toggle
+                                        checked={privacyState[item.key]}
+                                        onChange={newVal => {
+                                            const next = { ...privacyState, [item.key]: newVal };
+                                            savePrivacy(next);
+                                        }}
+                                    />
+                                </div>
+                            ))}
 
                             <div className="px-6 py-4 border-t border-white/5">
                                 <p className="text-slate-600 text-xs leading-relaxed">
-                                    Your data is stored securely and is never sold to third parties. AuraLearn follows strict data protection standards.
+                                    {s.privacyFooter}
                                 </p>
                             </div>
                         </div>
@@ -709,9 +962,9 @@ const StudentSettings = () => {
                         <div className="w-14 h-14 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center text-red-500 mx-auto mb-5">
                             <FiTrash2 size={24} />
                         </div>
-                        <h3 className="text-white text-lg font-black text-center mb-2">Delete Account?</h3>
+                        <h3 className="text-white text-lg font-black text-center mb-2">{s.deleteConfirmTitle}</h3>
                         <p className="text-slate-400 text-sm text-center leading-relaxed mb-5">
-                            Type <span className="text-white font-bold">DELETE</span> to confirm permanently removing your account.
+                            {s.deleteConfirmDesc}
                         </p>
                         <input
                             type="text"
@@ -725,14 +978,14 @@ const StudentSettings = () => {
                                 onClick={() => { setShowDelete(false); setDeleteConfirm(''); }}
                                 className="flex-1 py-3 bg-white/5 border border-white/10 text-slate-300 text-sm font-bold rounded-2xl hover:bg-white/10 transition-all cursor-pointer"
                             >
-                                Cancel
+                                {s.cancel}
                             </button>
                             <button
                                 disabled={deleteConfirm !== 'DELETE'}
                                 onClick={() => { localStorage.clear(); window.location.href = '/login'; }}
                                 className="flex-1 py-3 bg-red-600 hover:bg-red-700 disabled:bg-red-900/40 disabled:text-red-800 text-white text-sm font-bold rounded-2xl transition-all cursor-pointer disabled:cursor-not-allowed"
                             >
-                                Delete Forever
+                                {s.deleteForever}
                             </button>
                         </div>
                     </div>

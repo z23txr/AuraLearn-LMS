@@ -85,7 +85,7 @@ const ExploreCoursesList = ({ limit, showPagination = false, sortBy }) => {
             </div>
 
             {/* Courses Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-10 justify-items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 sm:gap-8 lg:gap-10 justify-items-center">
                 {filteredCourses.length > 0 ? (
                     currentCourses.map((course) => (
                         <CourseCard 
@@ -106,7 +106,7 @@ const ExploreCoursesList = ({ limit, showPagination = false, sortBy }) => {
 
             {/* Pagination Controls */}
             {showPagination && totalPages > 1 && (
-                <div className="flex justify-center items-center gap-8 mt-20 py-10 border-t border-white/5">
+                <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8 mt-12 sm:mt-20 py-6 sm:py-10 border-t border-white/5">
                     <button 
                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
                         disabled={currentPage === 1}

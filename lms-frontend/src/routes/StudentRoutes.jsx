@@ -8,6 +8,8 @@ import CoursePlayer from "../components/dashboard/CoursePlayer";
 import DashboardHome from "../pages/student/StudentDashboard/DashboardHome";
 import AIAssistant from "../pages/student/AIAssistant/AIAssistant";
 import StudentSettings from "../pages/student/Settings/StudentSettings";
+import Certificates from "../pages/student/Certificates/Certificates";
+import Quizzes from "../pages/student/Quizzes/Quizzes";
 
 const StudentRoutes = [
   <Route 
@@ -27,6 +29,8 @@ const StudentRoutes = [
     <Route path="course-details/:id" element={<CoursePlayer />} />
     <Route path="ai-assistant" element={<AIAssistant />} />
     <Route path="settings" element={<StudentSettings />} />
+    <Route path="certificates" element={<Certificates />} />
+    <Route path="quizzes" element={<Quizzes />} />
   </Route>
 ];
 

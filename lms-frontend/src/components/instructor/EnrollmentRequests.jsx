@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiCheck, FiX, FiUser, FiMapPin, FiPhone, FiCreditCard, FiBookOpen, FiSearch } from 'react-icons/fi';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 
 const EnrollmentRequests = () => {
     const [requests, setRequests] = useState([]);
@@ -32,14 +33,36 @@ const EnrollmentRequests = () => {
         try {
             const res = await axios.put(`http://localhost:5000/api/enrollments/approve/${id}`);
             
-            toast.success(`${studentName} Approved! ID: ${res.data.regNumber}`, {
-                theme: "dark",
-                position: "top-center"
-            });
+            toast.success(`${studentName} Approved! ID: ${res.data.regNumber}`);
             
             setRequests(prev => prev.filter(req => req._id !== id));
         } catch (err) {
             toast.error("Approval process failed!");
+        }
+    };
+
+    const handleReject = async (id, studentName) => {
+        const result = await Swal.fire({
+            title: 'Reject Request?',
+            text: `Are you sure you want to reject ${studentName}'s application?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#334155',
+            confirmButtonText: 'Yes, reject',
+            background: '#0f172a',
+            color: '#fff',
+            borderRadius: '20px'
+        });
+
+        if (!result.isConfirmed) return;
+
+        try {
+            await axios.delete(`http://localhost:5000/api/enrollments/reject/${id}`);
+            toast.error(`${studentName}'s request was rejected.`);
+            setRequests(prev => prev.filter(req => req._id !== id));
+        } catch (err) {
+            toast.error("Rejection process failed!");
         }
     };
 
@@ -52,16 +75,16 @@ const EnrollmentRequests = () => {
 
     return (
         <div className="p-2 animate-in fade-in duration-500 font-['Poppins']">
-            <ToastContainer />
             
-            <div className="flex justify-between items-end mb-8">
+            
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
                 <div>
                     <h2 className="text-white text-2xl font-bold mb-1 tracking-tight">Enrollment <span className="text-[#a855f7]">Requests</span></h2>
                     <p className="text-slate-500 text-sm">Find students by name and assign AU-IDs.</p>
                 </div>
                 
                 {/* Search Box */}
-                <div className="bg-[#1e293b] rounded-xl px-4 py-2.5 flex items-center gap-2 w-80 border border-white/5 shadow-inner">
+                <div className="bg-[#1e293b] rounded-xl px-4 py-2.5 flex items-center gap-2 w-full sm:w-80 border border-white/5 shadow-inner">
                     <FiSearch  />
                     <input 
                         type="text" 
@@ -73,8 +96,8 @@ const EnrollmentRequests = () => {
                 </div>
             </div>
 
-            <div className="bg-[#1e293b]/30 backdrop-blur-xl border border-white/5 rounded-[28px] overflow-hidden shadow-2xl">
-                <table className="w-full text-left">
+            <div className="bg-[#1e293b]/30 backdrop-blur-xl border border-white/5 rounded-[28px] overflow-x-auto shadow-2xl">
+                <table className="w-full text-left min-w-[800px]">
                     <thead className="bg-white/5 text-[#94a3b8] text-[11px] uppercase tracking-[2px] font-bold">
                         <tr>
                             <th className="p-6">Student Info</th>
@@ -133,7 +156,11 @@ const EnrollmentRequests = () => {
                                             >
                                                 <FiCheck size={20} />
                                             </button>
-                                            <button className="w-10 h-10 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-lg hover:shadow-red-500/20">
+                                            <button 
+                                                onClick={() => handleReject(req._id, req.studentDetails?.fullName)}
+                                                className="w-10 h-10 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-lg hover:shadow-red-500/20"
+                                                title="Reject Student"
+                                            >
                                                 <FiX size={20} />
                                             </button>
                                         </div>

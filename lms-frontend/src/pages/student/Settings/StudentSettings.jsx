@@ -584,7 +584,7 @@ const StudentSettings = () => {
                     {/* Sign out */}
                     <div className="bg-[#0a0f1e] border border-white/8 rounded-3xl p-2">
                         <button
-                            onClick={() => { localStorage.clear(); window.location.href = '/login'; }}
+                            onClick={() => { localStorage.clear(); window.location.href = '/'; }}
                             className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:text-red-400 hover:bg-red-500/5 text-sm font-medium transition-all cursor-pointer w-full"
                         >
                             <FiLogOut size={15} />

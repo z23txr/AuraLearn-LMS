@@ -65,7 +65,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             {/* Sign Out */}
             <div className="mt-auto pt-4 border-t border-white/5">
                 <button 
-                    onClick={() => { localStorage.clear(); window.location.href = '/login'; }}
+                    onClick={() => { localStorage.clear(); window.location.href = '/'; }}
                     className={`flex items-center justify-center gap-2 w-full p-3.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl font-bold cursor-pointer transition-all hover:bg-red-500 hover:text-white shadow-lg shadow-red-500/5 group ${isCollapsed ? 'p-3.5 justify-center w-12 h-12 mx-auto' : ''}`}
                     title={isCollapsed ? "Sign Out" : ""}
                 >

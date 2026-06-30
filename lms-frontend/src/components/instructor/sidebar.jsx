@@ -12,7 +12,7 @@ const Sidebar = ({ onClose }) => {
         toast.info("Logout successfully");
         
         setTimeout(() => {
-            navigate('/login');
+            navigate('/');
         }, 1200);
     };
 

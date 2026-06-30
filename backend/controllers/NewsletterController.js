@@ -3,9 +3,12 @@ import nodemailer from "nodemailer";
 
 export const subscribeEmail=async(req,res)=>{
     try{
-        const{email}=req.body;
-        if (!email) return res.status(400).json({ message: "Email is required" });
-        const existingSubscription=await Newsletter.findOne({email});
+        const { email: rawEmail } = req.body;
+        if (!rawEmail) return res.status(400).json({ message: "Email is required" });
+        
+        const email = rawEmail.trim().toLowerCase();
+        const existingSubscription = await Newsletter.findOne({ email });
+        
         if(existingSubscription){
             return res.status(400).json({message:"Email is already subscribed to the newsletter"});
         }
@@ -43,7 +46,10 @@ export const subscribeEmail=async(req,res)=>{
             res.status(201).json({ message: "Welcome aboard! You have successfully subscribed to the newsletter." });
         }
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server error, try again." });
+        console.error("Newsletter Subscription Error:", error);
+        if (error.code === 11000) {
+            return res.status(400).json({ message: "Email is already subscribed to the newsletter" });
+        }
+        res.status(500).json({ message: "Server error: " + error.message });
     }
 };

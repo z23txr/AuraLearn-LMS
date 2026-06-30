@@ -37,6 +37,10 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
+        if (!user.password) {
+            return res.status(400).json({ message: "Account setup incomplete. Please reset your password." });
+        }
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid email or password" });
@@ -57,8 +61,8 @@ export const login = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server error" });
+        console.error("Login Error:", error);
+        res.status(500).json({ message: "Server error: " + error.message });
     }
 };
 

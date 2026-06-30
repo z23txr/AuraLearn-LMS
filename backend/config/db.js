@@ -1,13 +1,23 @@
 // db.js
 import mongoose from "mongoose";
 
+let isConnected = false;
+
 const connectDb = async () => {
+    if (isConnected || mongoose.connection.readyState >= 1) {
+        console.log(" MongoDB already connected");
+        return;
+    }
+
     try {
-        await mongoose.connect(process.env.MONGO_URI);
+        const db = await mongoose.connect(process.env.MONGO_URI, {
+            serverSelectionTimeoutMS: 5000,
+        });
+        isConnected = db.connections[0].readyState === 1;
         console.log(" MongoDB Connected Successfully");
     } catch (error) {
         console.log(" ⚠️ MongoDB Connection Failed:", error.message);
-        console.log(" Running backend in database-disconnected mode. Please start your local MongoDB service at 127.0.0.1:27017 or update MONGO_URI in backend/.env");
+        console.log(" Running backend in database-disconnected mode.");
     }
 };
 

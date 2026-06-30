@@ -10,6 +10,7 @@ import {
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import 'react-toastify/dist/ReactToastify.css';
+import { uploadToCloudinary } from '../../utils/uploadCloudinary.js';
 
 // ==============================component=====================================
 
@@ -75,15 +76,20 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
 
         if (file) {
             setLoading(true);
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('title', "FINAL_EXAM");
-            formData.append('section', 'assignments');
-
+            
             try {
-                // Upload Exam File
-                await axios.patch(`${import.meta.env.VITE_API_URL}/api/courses/add-material/${course._id}`, formData, {
-                    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+                // Upload Exam File directly to Cloudinary
+                toast.info("Uploading final exam document...");
+                const fileUrl = await uploadToCloudinary(file);
+                
+                const payload = {
+                    fileUrl,
+                    title: "FINAL_EXAM",
+                    section: 'assignments'
+                };
+
+                await axios.patch(`${import.meta.env.VITE_API_URL}/api/courses/add-material/${course._id}`, payload, {
+                    headers: { Authorization: `Bearer ${token}` }
                 });
 
                 //  Mark Complete in Database
@@ -109,15 +115,20 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
         if (!material.title || !material.file) return toast.warning("Title and file required!");
         
         setLoading(true);
-        const formData = new FormData();
-        formData.append('file', material.file);
-        formData.append('title', material.title);
-        formData.append('section', activeTab); 
-
         try {
-            const uploadToastId = toast.loading("Updating...");
-            await axios.patch(`${import.meta.env.VITE_API_URL}/api/courses/add-material/${course._id}`, formData, {
-                headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+            const uploadToastId = toast.loading("Uploading to cloud...");
+            
+            // Upload directly to Cloudinary
+            const fileUrl = await uploadToCloudinary(material.file);
+            
+            const payload = {
+                fileUrl,
+                title: material.title,
+                section: activeTab
+            };
+
+            await axios.patch(`${import.meta.env.VITE_API_URL}/api/courses/add-material/${course._id}`, payload, {
+                headers: { Authorization: `Bearer ${token}` }
             });
             toast.update(uploadToastId, { render: "Updated Successfully!", type: "success", isLoading: false, autoClose: 3000 });
             setMaterial({ title: '', file: null });
@@ -170,20 +181,26 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
     // Generate Quiz using AI
     const handleAIQuizGen = async () => {
         setAiLoading(true);
-        const toastId = toast.loading("AI is crafting quiz questions...");
+        const toastId = toast.loading("Preparing AI context...");
         try {
-            const formData = new FormData();
-            formData.append('courseId', course._id);
-            formData.append('promptText', aiPrompt);
-            formData.append('numQuestions', aiCount);
+            let fileUrl = '';
             if (aiFile) {
-                formData.append('file', aiFile);
+                toast.update(toastId, { render: "Uploading document to cloud...", type: "info", isLoading: true });
+                fileUrl = await uploadToCloudinary(aiFile);
             }
 
-            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/courses/generate-quiz`, formData, { 
+            toast.update(toastId, { render: "AI is crafting quiz questions...", type: "info", isLoading: true });
+            
+            const payload = {
+                courseId: course._id,
+                promptText: aiPrompt,
+                numQuestions: aiCount,
+                fileUrl
+            };
+
+            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/courses/generate-quiz`, payload, { 
                 headers: { 
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data'
+                    Authorization: `Bearer ${token}`
                 } 
             });
             

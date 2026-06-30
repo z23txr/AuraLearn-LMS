@@ -199,7 +199,7 @@ const ChatWidget = () => {
                                             <div className="flex justify-center p-10"><FiLoader className="text-[#a855f7] animate-spin text-3xl" /></div>
                                         ) : messages.length > 0 ? (
                                             messages.map(msg => {
-                                                const isMe = msg.senderId === (user.id || user._id);
+                                                const isMe = String(msg.senderId) === String(user.id || user._id);
                                                 return (
                                                     <div key={msg._id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                                                         <div className={`max-w-[75%] p-4 rounded-3xl ${isMe ? 'bg-gradient-to-br from-[#a855f7] to-[#820ad4] text-white rounded-tr-sm shadow-[0_5px_15px_rgba(168,85,247,0.3)]' : 'bg-[#1e293b] border border-white/10 text-slate-200 rounded-tl-sm shadow-lg'}`}>

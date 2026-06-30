@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fi';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { uploadToCloudinary } from '../../utils/uploadCloudinary.js';
 
 const CoursePlayer = () => {
     const { id } = useParams();
@@ -164,14 +165,16 @@ const CoursePlayer = () => {
             const optimisticSub = { assignmentId: asnId, status: "Pending" };
             setEnrollment(prev => ({ ...prev, submissions: [...(prev.submissions || []), optimisticSub] }));
             
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('assignmentId', asnId);
-            formData.append('enrollmentId', enrollment._id);
-
-            const toastId = toast.loading("Syncing Submission...");
+            const toastId = toast.loading("Uploading submission to cloud...");
             try {
-                const res = await axios.post(`${PF}api/enrollments/submit-assignment`, formData, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } });
+                const fileUrl = await uploadToCloudinary(file);
+                
+                const formData = new FormData();
+                formData.append('fileUrl', fileUrl);
+                formData.append('assignmentId', asnId);
+                formData.append('enrollmentId', enrollment._id);
+
+                const res = await axios.post(`${PF}api/enrollments/submit-assignment`, formData, { headers: { Authorization: `Bearer ${token}` } });
                 setEnrollment(res.data.enrollment);
                 toast.update(toastId, { render: "Successfully Submitted!", type: "success", isLoading: false, autoClose: 2000 });
                 
@@ -195,20 +198,22 @@ const CoursePlayer = () => {
             const optimisticSub = { assignmentId: asnId, status: "Pending" };
             setEnrollment(prev => ({ ...prev, submissions: [...(prev.submissions || []), optimisticSub] }));
             
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('assignmentId', asnId);
-            formData.append('enrollmentId', enrollment._id);
-
-            const formDataTest = new FormData();
-            formDataTest.append('file', file);
-            formDataTest.append('courseId', course._id);
-
-            const toastId = toast.loading("Syncing Capstone Project...");
+            const toastId = toast.loading("Uploading Capstone Project...");
             try {
-                const res = await axios.post(`${PF}api/enrollments/submit-assignment`, formData, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } });
+                const fileUrl = await uploadToCloudinary(file);
+                
+                const formData = new FormData();
+                formData.append('fileUrl', fileUrl);
+                formData.append('assignmentId', asnId);
+                formData.append('enrollmentId', enrollment._id);
+
+                const formDataTest = new FormData();
+                formDataTest.append('fileUrl', fileUrl);
+                formDataTest.append('courseId', course._id);
+
+                const res = await axios.post(`${PF}api/enrollments/submit-assignment`, formData, { headers: { Authorization: `Bearer ${token}` } });
                 setEnrollment(res.data.enrollment);
-                await axios.post(`${PF}api/courses/submit-test`, formDataTest, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } });
+                await axios.post(`${PF}api/courses/submit-test`, formDataTest, { headers: { Authorization: `Bearer ${token}` } });
 
                 toast.update(toastId, { render: "Final Test Submitted Successfully!", type: "success", isLoading: false, autoClose: 2000 });
                 fetchData();

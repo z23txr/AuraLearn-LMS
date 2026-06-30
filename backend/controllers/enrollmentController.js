@@ -209,7 +209,7 @@ export const updateProgress = async (req, res) => {
 // Assignment Submission Logic
 export const submitAssignment = async (req, res) => {
     try {
-        const { enrollmentId, assignmentId } = req.body;
+        const { enrollmentId, assignmentId, fileUrl } = req.body;
         
         //  Enrollment find karein
         const enrollment = await Enrollment.findById(enrollmentId);
@@ -234,12 +234,12 @@ export const submitAssignment = async (req, res) => {
             return res.status(400).json({ message: "Assignment already submitted!" });
         }
 
-        if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+        if (!fileUrl) return res.status(400).json({ message: "No file uploaded" });
 
         // 
         enrollment.submissions.push({
             assignmentId,
-            filePath: req.file.path,
+            filePath: fileUrl,
             submittedAt: new Date(),
             status: "Pending" 
         });
@@ -266,7 +266,7 @@ export const submitAssignment = async (req, res) => {
         course.testResults.push({
             studentId: enrollment.studentId,
             studentName: enrollment.studentDetails?.fullName || 'Student',
-            submissionPath: req.file.path,
+            submissionPath: fileUrl,
             status: 'Pending',
             submittedAt: new Date()
         });

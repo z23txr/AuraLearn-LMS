@@ -9,11 +9,7 @@ const Sidebar = ({ onClose }) => {
     //  Logout Functionality
     const handleLogout = () => {
         localStorage.clear(); 
-        toast.info("Logout successfully");
-        
-        setTimeout(() => {
-            navigate('/');
-        }, 1200);
+        window.location.href = '/';
     };
 
    

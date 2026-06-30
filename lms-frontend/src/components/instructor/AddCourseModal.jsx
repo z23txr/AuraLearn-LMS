@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { FiX, FiUpload, FiCheckCircle, FiBookOpen, FiType, FiLayers, FiFileText } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import { uploadToCloudinary } from '../../utils/uploadCloudinary.js';
 
 // ===================================Component==============================
 const AddCourseModal = ({ isOpen, onClose, refreshCourses }) => {
@@ -22,17 +23,28 @@ const AddCourseModal = ({ isOpen, onClose, refreshCourses }) => {
         e.preventDefault();
         setLoading(true);
         const token = localStorage.getItem('token')?.replace(/"/g, '');
-        const data = new FormData();
-        data.append('title', formData.title);
-        data.append('description', formData.description);
-        data.append('category', formData.category);
-        data.append('thumbnail', thumbnail);
+        let fileUrl = '';
+        if (thumbnail) {
+            try {
+                fileUrl = await uploadToCloudinary(thumbnail);
+            } catch (err) {
+                toast.error("Thumbnail upload failed.");
+                setLoading(false);
+                return;
+            }
+        }
+
+        const payload = {
+            title: formData.title,
+            description: formData.description,
+            category: formData.category,
+            fileUrl
+        };
 
         try {
-            const res = await axios.post(import.meta.env.VITE_API_URL + '/api/courses/create', data, {
+            const res = await axios.post(import.meta.env.VITE_API_URL + '/api/courses/create', payload, {
                 headers: { 
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data' 
+                    Authorization: `Bearer ${token}`
                 }
             });
             if (res.status === 200 || res.status === 201) {

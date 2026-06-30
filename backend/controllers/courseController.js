@@ -10,9 +10,9 @@ const require = createRequire(import.meta.url);
 // ========================Create Course (Initial metadata)
 export const createCourse = async (req, res) => {
     try {
-        const { title, description, category } = req.body;
-        // =================================Multer se file path lena
-        const thumbnailPath = req.file ? req.file.path : ''; 
+        const { title, description, category, fileUrl } = req.body;
+        // ================================= Direct Cloudinary URL
+        const thumbnailPath = fileUrl || ''; 
 
         // ================================= Naya Course create karna
         const newCourse = new Course({
@@ -45,8 +45,8 @@ export const createCourse = async (req, res) => {
 // ========================== Add Content Dynamically
 export const addMaterial = async (req, res) => {
     try {
-        const { section, title } = req.body; 
-        const filePath = req.file.path; 
+        const { section, title, fileUrl } = req.body; 
+        const filePath = fileUrl; 
 
         const updateData = {};
         updateData[section] = { title, filePath };
@@ -141,9 +141,9 @@ export const markCourseAsComplete = async (req, res) => {
 
 export const submitFinalTest = async (req, res) => {
     try {
-        const { courseId } = req.body;
+        const { courseId, fileUrl } = req.body;
         const studentId = req.user._id; 
-        const submissionPath = req.file ? req.file.path : '';
+        const submissionPath = fileUrl || '';
 
         const course = await Course.findById(courseId);
         
@@ -365,23 +365,29 @@ export const getRecommendedCourses = async (req, res) => {
 
 export const generateQuizWithAI = async (req, res) => {
     try {
-        const { courseId, promptText, numQuestions } = req.body;
+        const { courseId, promptText, numQuestions, fileUrl } = req.body;
         const course = await Course.findById(courseId);
         if (!course) return res.status(404).json({ error: "Course not found" });
 
         const count = parseInt(numQuestions) || 5;
         let topicPrompt = promptText ? `on the topic: "${promptText}"` : "matching the course description and curriculum";
         
-        if (req.file) {
+        if (fileUrl) {
             try {
                 // Polyfill DOMMatrix for Vercel/Node environment to prevent pdf-parse crash
                 if (typeof global.DOMMatrix === 'undefined') {
                     global.DOMMatrix = class DOMMatrix {};
                 }
-                const pdfParse = require('pdf-parse');
+                const pdfParse = (await import('pdf-parse')).default || require('pdf-parse');
                 
-                const dataBuffer = fs.readFileSync(req.file.path);
-                const pdfData = await pdfParse(dataBuffer);
+                // Fetch the PDF from Cloudinary directly
+                const pdfRes = await fetch(fileUrl);
+                if (!pdfRes.ok) throw new Error("Failed to fetch PDF from Cloudinary");
+                
+                const arrayBuffer = await pdfRes.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+                
+                const pdfData = await pdfParse(buffer);
                 topicPrompt += `\n\nAlso base your questions tightly on the following document context:\n"""${pdfData.text.substring(0, 5000)}"""\n\n`;
             } catch (err) {
                 console.error("PDF Parsing Error:", err);

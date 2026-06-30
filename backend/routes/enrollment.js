@@ -16,7 +16,6 @@ import {
 
 const router = express.Router();
 
-import upload from '../middleware/upload.js';
 // Student Routes
 router.post('/apply', applyForEnrollment);
 router.get('/student/:studentId', getStudentEnrollments);
@@ -24,7 +23,7 @@ router.get('/all-with-status', getAllCoursesWithStatus);
 
 //  Progress 
 router.post('/update-progress', protect, updateProgress);
-router.post('/submit-assignment', protect, upload.single('file'), submitAssignment);
+router.post('/submit-assignment', protect, submitAssignment);
 router.post('/submit-quiz', protect, submitQuiz);
 
 // Instructor Routes

@@ -7,7 +7,6 @@ import Student from '../models/Student.js';
 import fs from 'fs';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const pdfParse = require('pdf-parse');
 // ========================Create Course (Initial metadata)
 export const createCourse = async (req, res) => {
     try {
@@ -375,6 +374,12 @@ export const generateQuizWithAI = async (req, res) => {
         
         if (req.file) {
             try {
+                // Polyfill DOMMatrix for Vercel/Node environment to prevent pdf-parse crash
+                if (typeof global.DOMMatrix === 'undefined') {
+                    global.DOMMatrix = class DOMMatrix {};
+                }
+                const pdfParse = require('pdf-parse');
+                
                 const dataBuffer = fs.readFileSync(req.file.path);
                 const pdfData = await pdfParse(dataBuffer);
                 topicPrompt += `\n\nAlso base your questions tightly on the following document context:\n"""${pdfData.text.substring(0, 5000)}"""\n\n`;

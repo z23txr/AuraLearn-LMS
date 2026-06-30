@@ -7,26 +7,63 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /* ─────────────────────────────────────────
-   Python Agent Runner
+   Node.js AI Agent Runner (Replaced Python)
 ───────────────────────────────────────── */
-const runPythonAgent = (message, history, apiKey) => {
-    return new Promise((resolve, reject) => {
-        const pythonScriptPath = path.join(__dirname, 'study_agent.py');
-        const child = spawn('python', [pythonScriptPath]);
-        let outputData = '', errorData = '';
-        child.stdout.on('data', d => { outputData += d.toString(); });
-        child.stderr.on('data', d => { errorData += d.toString(); });
-        child.on('close', code => {
-            if (code !== 0) {
-                reject(new Error(errorData || `Exit code ${code}`));
-            } else {
-                try { resolve(JSON.parse(outputData)); }
-                catch (e) { reject(new Error(`Parse error: ${outputData}`)); }
-            }
+const runNodeAgent = async (message, history, apiKey) => {
+    // 1. Input Guardrails
+    const offTopicTriggers = [
+        "cook", "recipe", "game cheat", "cheat code", "gossip", "movie plot", 
+        "song lyric", "joke", "funny story", "play a game", "video game"
+    ];
+    const msgLower = message.toLowerCase();
+    for (const trigger of offTopicTriggers) {
+        if (msgLower.includes(trigger)) {
+            return { reply: "I am AuraStudy AI, your academic companion. I can only assist with programming, database, and curriculum-related questions. Please ask a study-related question." };
+        }
+    }
+
+    // 2. Build Gemini Payload
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    const contents = history.map(chat => ({
+        role: chat.sender === "user" ? "user" : "model",
+        parts: [{ text: chat.text }]
+    }));
+    contents.push({ role: "user", parts: [{ text: message }] });
+
+    const systemInstruction = {
+        parts: [{
+            text: "You are AuraStudy AI, a dedicated academic tutor and study assistant on the AuraLearn LMS platform.\n" +
+                  "Ensure you strictly adhere to the following guidelines:\n\n" +
+                  "1. SCOPE GUARDRAILS: Provide only educational, academic, and technical assistance (e.g. computer science, coding, web development, study tips). If the user asks about non-academic or unrelated topics, politely refuse to answer.\n" +
+                  "2. STRICT EMOJI BAN: You must NEVER use any emojis, emoticons, smileys, checkmarks, arrows, stars, or pictograms in your response under any circumstances. All your replies must be entirely emoji-free and purely textual.\n" +
+                  "3. FORMATTING: Output response using clean GitHub Markdown with section headers, bold keywords, bullet points, and syntax-highlighted code blocks where appropriate. Be concise, professional, and clear."
+        }]
+    };
+
+    // 3. Make the API Call
+    try {
+        const response = await fetch(geminiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents, systemInstruction })
         });
-        child.stdin.write(JSON.stringify({ apiKey, message, history }));
-        child.stdin.end();
-    });
+        
+        if (!response.ok) {
+            const errBody = await response.text();
+            throw new Error(`Agent HTTP Error ${response.status}: ${response.statusText}. Body: ${errBody}`);
+        }
+
+        const data = await response.json();
+        let replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "I am having trouble forming a response. Please try again.";
+
+        // 4. Output Guardrails: Regex Emoji Cleaner
+        const emojiPattern = /[\u{10000}-\u{10ffff}]|[\u{2600}-\u{27bf}]|[\u{2000}-\u{3300}]|[\u{2B50}]|[\u{26A0}]/gu;
+        let cleanedReply = replyText.replace(emojiPattern, '').trim();
+
+        return { reply: cleanedReply };
+    } catch (error) {
+        return { error: error.message };
+    }
 };
 
 /* ─────────────────────────────────────────
@@ -65,11 +102,11 @@ export const handleStudyQuery = async (req, res) => {
         // Run Gemini agent
         let reply;
         try {
-            const result = await runPythonAgent(message, history, apiKey);
+            const result = await runNodeAgent(message, history, apiKey);
             if (result.error) throw new Error(result.error);
             reply = result.reply;
         } catch (agentError) {
-            console.error('Python Agent Error:', agentError);
+            console.error('Node Agent Error:', agentError);
             return res.status(500).json({ message: 'AuraStudy Agent failed.', error: agentError.message });
         }
 

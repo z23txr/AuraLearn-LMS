@@ -42,9 +42,34 @@ export const applyForEnrollment = async (req, res) => {
 export const getStudentEnrollments = async (req, res) => {
     try {
         const { studentId } = req.params;
-        const enrollments = await Enrollment.find({ studentId })
+        let enrollments = await Enrollment.find({ studentId })
             .populate('courseId')
             .populate('teacherId', 'name email');
+
+        // Auto-correct progress if items were deleted by instructor
+        for (let e of enrollments) {
+            const course = e.courseId;
+            if (course && course.videoLectures) {
+                const validItemIds = [
+                    ...(course.videoLectures || []).map(i => i._id.toString()),
+                    ...(course.pdfNotes || []).map(i => i._id.toString()),
+                    ...(course.pptSlides || []).map(i => i._id.toString()),
+                    ...(course.assignments || []).map(i => i._id.toString()),
+                    ...(course.quizzes || []).map(i => i._id.toString())
+                ];
+
+                const validCompleted = e.completedItems.filter(id => validItemIds.includes(id.toString()));
+                const totalItems = validItemIds.length > 0 ? validItemIds.length : 1;
+                const correctProgress = Math.round((validCompleted.length / totalItems) * 100);
+                
+                if (e.progress !== correctProgress || e.completedItems.length !== validCompleted.length) {
+                    e.completedItems = validCompleted;
+                    e.progress = correctProgress > 100 ? 100 : correctProgress;
+                    await e.save();
+                }
+            }
+        }
+
         res.status(200).json(enrollments);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -187,16 +212,33 @@ export const getInstructorApplications = async (req, res) => {
 
 export const updateProgress = async (req, res) => {
     try {
-        const { enrollmentId, itemId, totalItems } = req.body;
-        const enrollment = await Enrollment.findById(enrollmentId);
+        const { enrollmentId, itemId } = req.body;
+        const enrollment = await Enrollment.findById(enrollmentId).populate('courseId');
+        if (!enrollment) return res.status(404).json({ message: "Enrollment not found" });
 
         if (!enrollment.completedItems.includes(itemId)) {
             enrollment.completedItems.push(itemId);
         }
 
-       
-        const itemsCount = totalItems > 0 ? totalItems : 1;
-        enrollment.progress = Math.round((enrollment.completedItems.length / itemsCount) * 100);
+        // Fetch course and filter out any deleted items to fix stale progress bugs
+        const course = enrollment.courseId;
+        if (course) {
+            const validItemIds = [
+                ...(course.videoLectures || []).map(i => i._id.toString()),
+                ...(course.pdfNotes || []).map(i => i._id.toString()),
+                ...(course.pptSlides || []).map(i => i._id.toString()),
+                ...(course.assignments || []).map(i => i._id.toString()),
+                ...(course.quizzes || []).map(i => i._id.toString())
+            ];
+            
+            enrollment.completedItems = enrollment.completedItems.filter(id => validItemIds.includes(id.toString()));
+            
+            const totalItems = validItemIds.length > 0 ? validItemIds.length : 1;
+            enrollment.progress = Math.round((enrollment.completedItems.length / totalItems) * 100);
+        } else {
+            enrollment.progress = 0;
+        }
+
         if (enrollment.progress > 100) enrollment.progress = 100;
 
         await enrollment.save();
@@ -250,11 +292,16 @@ export const submitAssignment = async (req, res) => {
         }
 
         const course = await Course.findById(enrollment.courseId);
-        const totalQuizzes = course.quizzes ? course.quizzes.length : 0;
-        const totalItems = (course.videoLectures?.length || 0) + 
-                          (course.pdfNotes?.length || 0) + 
-                          (course.pptSlides?.length || 0) +
-                          (course.assignments?.length || 0) + totalQuizzes;
+        const validItemIds = [
+            ...(course.videoLectures || []).map(i => i._id.toString()),
+            ...(course.pdfNotes || []).map(i => i._id.toString()),
+            ...(course.pptSlides || []).map(i => i._id.toString()),
+            ...(course.assignments || []).map(i => i._id.toString()),
+            ...(course.quizzes || []).map(i => i._id.toString())
+        ];
+
+        enrollment.completedItems = enrollment.completedItems.filter(id => validItemIds.includes(id.toString()));
+        const totalItems = validItemIds.length > 0 ? validItemIds.length : 1;
 
         enrollment.progress = Math.round((enrollment.completedItems.length / totalItems) * 100);
         if (enrollment.progress > 100) enrollment.progress = 100;

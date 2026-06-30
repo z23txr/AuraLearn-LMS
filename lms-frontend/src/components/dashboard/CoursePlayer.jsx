@@ -372,9 +372,9 @@ const CoursePlayer = () => {
                         </div>
 
                         {/* CONTENT RENDERER */}
-                        <div className="flex-1 rounded-[40px] overflow-hidden bg-[#0c0c0c] border border-white/10 shadow-2xl relative min-h-[400px]">
+                        <div className="w-full rounded-[20px] lg:rounded-[40px] overflow-hidden bg-[#0c0c0c] border border-white/10 shadow-2xl relative">
                             {activeFile.type === 'video' && (
-                                <video key={activeFile.url} controls className="w-full h-full object-contain bg-black">
+                                <video key={activeFile.url} controls className="w-full aspect-video object-contain bg-black">
                                     <source src={formatUrl(activeFile.url)} type="video/mp4" />
                                 </video>
                             )}
@@ -383,7 +383,7 @@ const CoursePlayer = () => {
                                 <iframe 
                                     key={activeFile.url}
                                     src={`${formatUrl(activeFile.url)}#toolbar=0`} 
-                                    className="w-full h-full min-h-[60vh] bg-white border-none" 
+                                    className="w-full h-[60vh] sm:h-[70vh] bg-white border-none" 
                                     title="Document Viewer"
                                 />
                             )}

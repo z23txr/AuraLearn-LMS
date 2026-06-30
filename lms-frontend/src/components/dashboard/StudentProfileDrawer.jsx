@@ -76,7 +76,8 @@ const StudentProfileDrawer = ({ isOpen, onClose }) => {
             toast.update(toastId, { render: "Profile Successfully updated", type: "success", isLoading: false, autoClose: 2500 });
         } catch (err) {
             console.error("Error updating profile:", err);
-            toast.update(toastId, { render: "Failed. Try again.", type: "error", isLoading: false, autoClose: 2500 });
+            const errorMsg = err.response?.data?.error || err.response?.data?.message || "Failed. Try again.";
+            toast.update(toastId, { render: errorMsg, type: "error", isLoading: false, autoClose: 2500 });
         } finally {
             setIsLoading(false);
         }

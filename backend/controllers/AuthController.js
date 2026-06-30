@@ -164,7 +164,7 @@ export const updateProfile = async (req, res) => {
 
         const student = await Student.findOneAndUpdate(
             { userId },
-            { fullName, fatherName, contact, address, classSection, cnic },
+            { $set: { fullName, fatherName, contact, address, classSection, cnic } },
             { new: true, upsert: true }
         ).populate("userId", "email name");
 

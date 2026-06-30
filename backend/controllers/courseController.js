@@ -405,7 +405,7 @@ You MUST return a JSON array containing objects. Each object MUST have exactly t
 Do not return any markdown tags or backticks (like \`\`\`json). Return ONLY the raw JSON array.`;
 
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${process.env.GEMINI_API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
             {
                 method: 'POST',
                 headers: {

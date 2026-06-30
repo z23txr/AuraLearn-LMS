@@ -30,8 +30,10 @@ app.use(express.json());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
 
-connectDB();
-
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
+});
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/newsletter", newsletterRoutes);

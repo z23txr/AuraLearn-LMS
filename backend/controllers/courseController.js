@@ -429,6 +429,12 @@ Do not return any markdown tags or backticks (like \`\`\`json). Return ONLY the 
         );
 
         const data = await response.json();
+
+        if (!response.ok) {
+            console.error("Gemini API Error:", data.error);
+            return res.status(400).json({ error: `AI Service Error: ${data.error?.message || 'Unknown API Error'}` });
+        }
+
         let resultText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
         
         // Robust Extraction of JSON Array

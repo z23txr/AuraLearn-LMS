@@ -247,11 +247,11 @@ const CoursePlayer = () => {
     }
 
     return (
-        <div className="flex flex-col lg:flex-row h-screen bg-[#080808] text-white font-sans overflow-y-auto lg:overflow-hidden">
+        <div className="flex flex-col-reverse lg:flex-row min-h-screen lg:h-screen bg-[#080808] text-white font-sans overflow-x-hidden lg:overflow-hidden">
             <style>{`*::-webkit-scrollbar { display: none !important; } * { -ms-overflow-style: none !important; scrollbar-width: none !important; }`}</style>
             
             {/* --- VERTICAL STEPPER SIDEBAR --- */}
-            <aside id="curriculum-sidebar" className="w-full lg:w-[320px] border-b lg:border-b-0 lg:border-r border-white/5 bg-black z-30 transition-all flex flex-col shrink-0">
+            <aside id="curriculum-sidebar" className="w-full lg:w-[320px] border-t lg:border-t-0 lg:border-r border-white/5 bg-black z-30 transition-all flex flex-col shrink-0 lg:h-screen">
                 <div className="p-6 border-b border-white/5">
                     <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[10px] font-black text-white/40 hover:text-white transition-all uppercase tracking-[2px] mb-6">
                         <FiArrowLeft size={16}/> Back to Dashboard
@@ -328,7 +328,7 @@ const CoursePlayer = () => {
             </aside>
 
             {/* --- MAIN PLAYER AREA --- */}
-            <main id="main-player-area" className="flex-1 overflow-y-auto bg-[#080808] p-4 lg:p-10 no-scrollbar flex flex-col">
+            <main id="main-player-area" className="flex-1 overflow-y-auto bg-[#080808] p-4 lg:p-10 no-scrollbar flex flex-col lg:h-screen">
                 {activeFile ? (
                     <div className="max-w-5xl mx-auto w-full h-full flex flex-col space-y-6 lg:space-y-8 pb-20">
                         

@@ -27,7 +27,7 @@ const Certificates = () => {
     const fetchEnrollments = async () => {
         try {
             const res = await axios.get(`${PF}api/enrollments/student/${userId}`);
-            setEnrollments(res.data);
+            setEnrollments(Array.isArray(res.data) ? res.data : []);
             setLoading(false);
         } catch (err) {
             console.error("Error fetching student certificates:", err);

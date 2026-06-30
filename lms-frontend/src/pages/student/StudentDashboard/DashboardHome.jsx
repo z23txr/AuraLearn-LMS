@@ -19,8 +19,9 @@ const DashboardHome = () => {
             try {
                 const studentId = user.id || user._id; //
                 const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/enrollments/student/${studentId}`);
-                const approved = res.data.filter(e => e.status === 'Approved');
-                const pending = res.data.filter(e => e.status === 'Pending');
+                const enrollmentsList = Array.isArray(res.data) ? res.data : [];
+                const approved = enrollmentsList.filter(e => e.status === 'Approved');
+                const pending = enrollmentsList.filter(e => e.status === 'Pending');
                 const completed = approved.filter(e => e.progress === 100);
 
                 let userGrade = "N/A";

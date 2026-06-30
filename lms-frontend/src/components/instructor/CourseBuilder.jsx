@@ -46,7 +46,7 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
 
     const fetchEnrollments = async () => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/enrollments/instructor/${user.id || user._id}`);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/enrollments/instructor/${user.id || user._id}`);
             // Filter enrollments for this specific course
             const filtered = res.data.filter(e => e.courseId === course._id || e.courseId?._id === course._id);
             setEnrollmentsList(filtered);
@@ -82,12 +82,12 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
 
             try {
                 // Upload Exam File
-                await axios.patch(`http://localhost:5000/api/courses/add-material/${course._id}`, formData, {
+                await axios.patch(`${import.meta.env.VITE_API_URL}/api/courses/add-material/${course._id}`, formData, {
                     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
                 });
 
                 //  Mark Complete in Database
-                await axios.patch(`http://localhost:5000/api/courses/complete/${course._id}`, {}, {
+                await axios.patch(`${import.meta.env.VITE_API_URL}/api/courses/complete/${course._id}`, {}, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -116,7 +116,7 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
 
         try {
             const uploadToastId = toast.loading("Updating...");
-            await axios.patch(`http://localhost:5000/api/courses/add-material/${course._id}`, formData, {
+            await axios.patch(`${import.meta.env.VITE_API_URL}/api/courses/add-material/${course._id}`, formData, {
                 headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
             });
             toast.update(uploadToastId, { render: "Updated Successfully!", type: "success", isLoading: false, autoClose: 3000 });
@@ -130,7 +130,7 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
     //  Grading Students Logic
     const handleGrade = async (studentId, status, grade) => {
         try {
-            await axios.put(`http://localhost:5000/api/courses/grade-test`, {
+            await axios.put(`${import.meta.env.VITE_API_URL}/api/courses/grade-test`, {
                 courseId: course._id, studentId, status, grade
             }, { headers: { Authorization: `Bearer ${token}` } });
             
@@ -154,7 +154,7 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
         }
 
         try {
-            const res = await axios.patch(`http://localhost:5000/api/courses/quizzes/${course._id}`, { quizzes: updatedList }, {
+            const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/courses/quizzes/${course._id}`, { quizzes: updatedList }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setQuizzesList(res.data.quizzes);
@@ -180,7 +180,7 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
                 formData.append('file', aiFile);
             }
 
-            const res = await axios.post(`http://localhost:5000/api/courses/generate-quiz`, formData, { 
+            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/courses/generate-quiz`, formData, { 
                 headers: { 
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
@@ -208,7 +208,7 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
         };
         const updated = [...quizzesList, newQuiz];
         try {
-            const res = await axios.patch(`http://localhost:5000/api/courses/quizzes/${course._id}`, { quizzes: updated }, {
+            const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/courses/quizzes/${course._id}`, { quizzes: updated }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setQuizzesList(res.data.quizzes);
@@ -232,7 +232,7 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
         }
 
         try {
-            const res = await axios.patch(`http://localhost:5000/api/courses/quizzes/${course._id}`, { quizzes: updatedList }, {
+            const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/courses/quizzes/${course._id}`, { quizzes: updatedList }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setQuizzesList(res.data.quizzes);
@@ -245,7 +245,7 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
     const handleDeleteQuiz = async (quizIdx) => {
         const updatedList = quizzesList.filter((_, i) => i !== quizIdx);
         try {
-            const res = await axios.patch(`http://localhost:5000/api/courses/quizzes/${course._id}`, { quizzes: updatedList }, {
+            const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/courses/quizzes/${course._id}`, { quizzes: updatedList }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setQuizzesList(res.data.quizzes);
@@ -258,7 +258,7 @@ const CourseBuilder = ({ course, onBack, refreshData }) => {
     // Grade assignment manually
     const handleGradeAssignment = async (enrollmentId, assignmentId, grade, feedback, status) => {
         try {
-            await axios.put(`http://localhost:5000/api/enrollments/grade-assignment`, {
+            await axios.put(`${import.meta.env.VITE_API_URL}/api/enrollments/grade-assignment`, {
                 enrollmentId, assignmentId, grade, feedback, status
             }, { headers: { Authorization: `Bearer ${token}` } });
             toast.success(`Submission ${status}!`);

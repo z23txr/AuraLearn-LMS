@@ -19,7 +19,7 @@ const StudentInsight = ({ student, onBack }) => {
     const handleUpdate = async (studentId, updatedData) => {
         try {
             setLoading(true);
-            const res = await axios.put(`http://localhost:5000/api/courses/grade-test`, {
+            const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/courses/grade-test`, {
                 courseId: student.courseId,
                 studentId: studentId,
                 grade: updatedData.grade,
@@ -132,7 +132,7 @@ const StudentInsight = ({ student, onBack }) => {
                                             {/* View Submission Document */}
                                             {sub.filePath && (
                                                 <a 
-                                                    href={`http://localhost:5000/${sub.filePath?.replace(/\\/g, '/')}`} 
+                                                    href={`${import.meta.env.VITE_API_URL}/${sub.filePath?.replace(/\\/g, '/')}`} 
                                                     target="_blank" rel="noreferrer"
                                                     className="p-3.5 bg-[#1e293b] text-[#a855f7] rounded-xl border border-white/5 hover:bg-[#a855f7] hover:text-white transition-all"
                                                     title="View Submitted Paper"

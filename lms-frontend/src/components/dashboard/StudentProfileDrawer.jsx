@@ -21,7 +21,7 @@ const StudentProfileDrawer = ({ isOpen, onClose }) => {
     const [isEditA, setIsEditA] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const PF = "http://localhost:5000/";
+    const PF = import.meta.env.VITE_API_URL + "/";
 
     const fetchProfileAndEnrollments = async (userId) => {
         try {

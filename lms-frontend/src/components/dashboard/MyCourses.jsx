@@ -13,7 +13,7 @@ const MyCourses = () => {
     useEffect(() => {
         const fetchEnrolled = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/enrollments/student/${user.id || user._id}`);
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/enrollments/student/${user.id || user._id}`);
                 const myEnrolled = res.data.filter(e => e.status === 'Approved' || e.status === 'Pending');
                 setEnrolled(myEnrolled);
                 setLoading(false);

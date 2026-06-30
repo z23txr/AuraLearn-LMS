@@ -21,7 +21,7 @@ const Login = () => {
     const currentToastId = toast.loading("Verifying your profile");
     setIsSubmitting(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', logindata);
+      const response = await axios.post(import.meta.env.VITE_API_URL + '/api/auth/login', logindata);
       if (response.status === 200) {
         const { token, user } = response.data;
         localStorage.setItem('token', token);

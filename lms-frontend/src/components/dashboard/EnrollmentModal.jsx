@@ -25,7 +25,7 @@ const EnrollmentModal = ({ isOpen, onClose, course, onSuccess }) => {
             setIsSuccess(false);
             if (user && course?._id && course?.category) {
                 const studentId = user.id || user._id;
-                axios.post("http://localhost:5000/api/courses/view", {
+                axios.post(import.meta.env.VITE_API_URL + "/api/courses/view", {
                     userId: studentId,
                     courseId: course._id,
                     category: course.category
@@ -69,7 +69,7 @@ const EnrollmentModal = ({ isOpen, onClose, course, onSuccess }) => {
         };
 
         try {
-            const res = await axios.post("http://localhost:5000/api/enrollments/apply", payload);
+            const res = await axios.post(import.meta.env.VITE_API_URL + "/api/enrollments/apply", payload);
 
             if (res.status === 201 || res.status === 200) {
                 toast.update(toastId, { 

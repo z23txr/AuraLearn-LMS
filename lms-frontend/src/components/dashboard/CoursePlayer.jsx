@@ -15,7 +15,7 @@ const CoursePlayer = () => {
     const [enrollment, setEnrollment] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const PF = "http://localhost:5000/";
+    const PF = import.meta.env.VITE_API_URL + "/";
     const user = JSON.parse(localStorage.getItem('auraUser') || '{}');
     const token = localStorage.getItem('token')?.replace(/"/g, '');
 

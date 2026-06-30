@@ -55,7 +55,7 @@ const Register = () => {
     e.preventDefault();
     const currentToastId = toast.loading("Creating your account...");
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', formdata);
+      const response = await axios.post(import.meta.env.VITE_API_URL + '/api/auth/register', formdata);
       if (response.status === 201) {
         toast.update(currentToastId, { render: "Account Created Successfully! ", type: "success", isLoading: false, autoClose: 3000 });
         setformdata({ name: '', email: '', password: '', role: roleFromUrl });

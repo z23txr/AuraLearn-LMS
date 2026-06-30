@@ -4,7 +4,7 @@ import { FiBook, FiUser, FiArrowRight, FiClock, FiCheckCircle } from 'react-icon
 import EnrollmentModal from './EnrollmentModal';
 
 const CourseCard = ({ course, onEnrollSuccess }) => {
-    const PF = "http://localhost:5000/";
+    const PF = import.meta.env.VITE_API_URL + "/";
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [localStatus, setLocalStatus] = useState(course.enrollmentStatus || course.status);
 

@@ -18,7 +18,7 @@ const ExploreCoursesList = ({ limit, showPagination = false, sortBy }) => {
                 const studentId = user?.id || user?._id;
                 
                 //  Backend call with sorting support
-                const res = await axios.get(`http://localhost:5000/api/enrollments/all-with-status?studentId=${studentId}&sortBy=${sortBy || ''}`);
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/enrollments/all-with-status?studentId=${studentId}&sortBy=${sortBy || ''}`);
                 
                 console.log("Aura Library Data:", res.data);
 

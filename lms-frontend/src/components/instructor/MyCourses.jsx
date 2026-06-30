@@ -26,7 +26,7 @@ const MyCourses = () => {
     const fetchInstructorCourses = async () => {
         try {
             setLoading(true);
-            const res = await axios.get("http://localhost:5000/api/courses");
+            const res = await axios.get(import.meta.env.VITE_API_URL + "/api/courses");
             // Fixed Comparison using toString()
             const filtered = res.data.filter(c => c.instructor?.toString() === instructorId?.toString());
             setMyCourses(filtered);
@@ -56,7 +56,7 @@ const MyCourses = () => {
         if (!result.isConfirmed) return;
 
         try {
-            await axios.delete(`http://localhost:5000/api/courses/delete/${courseId}`, {
+            await axios.delete(`${import.meta.env.VITE_API_URL}/api/courses/delete/${courseId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMyCourses(prev => prev.filter(c => c._id !== courseId));
@@ -95,7 +95,7 @@ const MyCourses = () => {
                     {currentCourses.map(course => (
                         <div key={course._id} className="bg-[#0f1218] rounded-[28px] border border-white/10 overflow-hidden group hover:border-[#a855f7] transition-all">
                             <div className="h-48 m-2 rounded-2xl overflow-hidden bg-slate-800">
-                                <img src={`http://localhost:5000/${course.thumbnail?.replace(/\\/g, '/')}`} className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500" alt="" />
+                                <img src={`${import.meta.env.VITE_API_URL}/${course.thumbnail?.replace(/\\/g, '/')}`} className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500" alt="" />
                             </div>
                             <div className="p-6">
                                 <h3 className="text-xl font-bold text-white truncate mb-4">{course.title}</h3>

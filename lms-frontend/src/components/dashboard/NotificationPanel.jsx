@@ -15,7 +15,7 @@ const NotificationPanel = ({ isOpen, onClose, notifications = [], setNotificatio
         } else {
             try {
                 // Database update
-                await axios.put(`http://localhost:5000/api/notifications/read/${id}`);
+                await axios.put(`${import.meta.env.VITE_API_URL}/api/notifications/read/${id}`);
                 setNotifications(prev => prev.filter(n => n._id !== id));
                 toast.success("Notification cleared!");
             } catch (err) { toast.error("Update failed"); }
@@ -30,7 +30,7 @@ const markAllAsRead = async () => {
     }
     try {
         // 
-        await axios.put(`http://localhost:5000/api/notifications/mark-all/${userId}`);
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/notifications/mark-all/${userId}`);
         setNotifications([]);
         toast.info("Cleared!");
     } catch (err) {

@@ -15,7 +15,7 @@ const Navbar = ({ onProfileClick, onMenuClick, isMobile, searchQuery, setSearchQ
             if (!userId) return;
 
             // 
-            const res = await axios.get(`http://localhost:5000/api/notifications/${userId}?role=student`);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/notifications/${userId}?role=student`);
             
             // Backend data mapping
             const formatted = res.data.map(n => ({

@@ -20,7 +20,7 @@ const ClassAnalyticsHub = () => {
     const fetchInstructorStudents = async () => {
         try {
             const instructorId = user.id || user._id;
-            const res = await axios.get(`http://localhost:5000/api/enrollments/instructor/${instructorId}`);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/enrollments/instructor/${instructorId}`);
             
             // Only consider approved enrollments for analytics
             setEnrollments(res.data.filter(s => s.status === 'Approved'));

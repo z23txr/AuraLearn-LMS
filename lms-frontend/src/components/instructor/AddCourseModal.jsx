@@ -29,7 +29,7 @@ const AddCourseModal = ({ isOpen, onClose, refreshCourses }) => {
         data.append('thumbnail', thumbnail);
 
         try {
-            const res = await axios.post('http://localhost:5000/api/courses/create', data, {
+            const res = await axios.post(import.meta.env.VITE_API_URL + '/api/courses/create', data, {
                 headers: { 
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data' 

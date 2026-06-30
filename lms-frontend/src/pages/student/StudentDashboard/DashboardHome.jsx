@@ -18,7 +18,7 @@ const DashboardHome = () => {
         const fetchRealStats = async () => {
             try {
                 const studentId = user.id || user._id; //
-                const res = await axios.get(`http://localhost:5000/api/enrollments/student/${studentId}`);
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/enrollments/student/${studentId}`);
                 const approved = res.data.filter(e => e.status === 'Approved');
                 const pending = res.data.filter(e => e.status === 'Pending');
                 const completed = approved.filter(e => e.progress === 100);
@@ -54,7 +54,7 @@ const DashboardHome = () => {
         const fetchRecommendations = async () => {
             try {
                 const studentId = user.id || user._id;
-                const res = await axios.get(`http://localhost:5000/api/courses/recommendations/${studentId}`);
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/courses/recommendations/${studentId}`);
                 setRecommendedCourses(res.data);
             } catch (err) {
                 console.error("Recommendations Error:", err);

@@ -57,7 +57,7 @@ const ResetPassword = () => {
         const currentToastId = toast.loading("Updating your password...");
         setIsSubmitting(true);
         try {
-            await axios.put(`http://localhost:5000/api/auth/reset-password/${token}`, { password });
+            await axios.put(`${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`, { password });
             toast.update(currentToastId, {
                 render: "Password reset successfully! Redirecting to login...",
                 type: "success",

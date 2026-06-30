@@ -27,7 +27,7 @@ const Navbar = ({ setSearchQuery, onToggleSidebar }) => {
         try {
             const userId = user.id || user._id;
            
-            const res = await axios.get(`http://localhost:5000/api/notifications/${userId}?role=${user.role || 'instructor'}`);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/notifications/${userId}?role=${user.role || 'instructor'}`);
           
             const formattedNotifs = res.data.map(n => ({
                 ...n,

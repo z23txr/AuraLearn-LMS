@@ -19,7 +19,7 @@ const EnrollmentRequests = () => {
     const fetchRequests = async () => {
         try {
             const instructorId = user.id || user._id;
-            const res = await axios.get(`http://localhost:5000/api/enrollments/instructor/${instructorId}`);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/enrollments/instructor/${instructorId}`);
 
             setRequests(res.data.filter(req => req.status === 'Pending'));
             setLoading(false);
@@ -31,7 +31,7 @@ const EnrollmentRequests = () => {
 
     const handleApprove = async (id, studentName) => {
         try {
-            const res = await axios.put(`http://localhost:5000/api/enrollments/approve/${id}`);
+            const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/enrollments/approve/${id}`);
             
             toast.success(`${studentName} Approved! ID: ${res.data.regNumber}`);
             
@@ -58,7 +58,7 @@ const EnrollmentRequests = () => {
         if (!result.isConfirmed) return;
 
         try {
-            await axios.delete(`http://localhost:5000/api/enrollments/reject/${id}`);
+            await axios.delete(`${import.meta.env.VITE_API_URL}/api/enrollments/reject/${id}`);
             toast.error(`${studentName}'s request was rejected.`);
             setRequests(prev => prev.filter(req => req._id !== id));
         } catch (err) {

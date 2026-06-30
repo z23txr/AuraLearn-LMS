@@ -22,7 +22,7 @@ const Certificates = () => {
     const user = JSON.parse(localStorage.getItem('auraUser') || '{}');
     const userId = user.id || user._id;
     const token = localStorage.getItem('token')?.replace(/"/g, '');
-    const PF = "http://localhost:5000/";
+    const PF = import.meta.env.VITE_API_URL + "/";
 
     const fetchEnrollments = async () => {
         try {

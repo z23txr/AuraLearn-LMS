@@ -10,7 +10,7 @@ import {
 const CourseDetailsView = ({ course: initialCourse, onBack }) => {
     const [course, setCourse] = useState(initialCourse);
     const [expandedSections, setExpandedSections] = useState({}); // State to track which sections are open
-    const API_URL = "http://localhost:5000/";
+    const API_URL = import.meta.env.VITE_API_URL + "/";
 
     const fetchLatestCourseData = async () => {
         try {

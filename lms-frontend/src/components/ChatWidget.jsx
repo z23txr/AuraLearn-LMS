@@ -15,7 +15,7 @@ const ChatWidget = () => {
 
     const user = JSON.parse(localStorage.getItem('auraUser') || '{}');
     const token = localStorage.getItem('token')?.replace(/"/g, '');
-    const API_URL = "http://localhost:5000/";
+    const API_URL = import.meta.env.VITE_API_URL + "/";
 
     // Fetch contacts when widget opens for the first time
     useEffect(() => {

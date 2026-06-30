@@ -12,7 +12,7 @@ const Footer = () => {
         if (!subscriberEmail) return toast.warn("AuraLearn needs an email to keep you updated!");
         setIsSubmitting(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/newsletter/subscribe', { email: subscriberEmail });
+            const response = await axios.post(import.meta.env.VITE_API_URL + '/api/newsletter/subscribe', { email: subscriberEmail });
             if (response.status === 201) {
                 toast.success(response.data.message || "Welcome aboard!");
                 setSubscriberEmail("");

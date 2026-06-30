@@ -16,13 +16,7 @@ import {
 
 const router = express.Router();
 
-//  Uploads configuration
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/submissions/'),
-    filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
-const upload = multer({ storage });
-
+import upload from '../middleware/upload.js';
 // Student Routes
 router.post('/apply', applyForEnrollment);
 router.get('/student/:studentId', getStudentEnrollments);
